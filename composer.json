@@ -7,5 +7,13 @@
             "name": "Émerson William"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "scc\\Controllers\\":["app/controllers"]
+        },
+        "files": [
+            "app/config.php"
+        ]
+    }
 }
