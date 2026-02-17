@@ -10,7 +10,8 @@
     "require": {},
     "autoload": {
         "psr-4": {
-            "scc\\Controllers\\":["app/controllers"]
+            "scc\\Controllers\\":["app/controllers"],
+            "scc\\System\\":["app/system"]
         },
         "files": [
             "app/config.php"

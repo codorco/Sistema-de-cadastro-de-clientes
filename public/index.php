@@ -1,11 +1,7 @@
 <?php
 
-use scc\Controllers\Main;
+use scc\System\Router;
 
 require_once('../vendor/autoload.php');
-
-echo APP_NAME;
-echo '<br>';
-
-$a = new Main();
-echo $a->teste();
+echo '<pre>';
+Router::dispatch();
