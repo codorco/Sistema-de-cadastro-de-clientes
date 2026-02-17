@@ -1,0 +1,11 @@
+{
+    "name": "codorco/scc",
+    "description": "Sistema de Cadastro de Clientes em php usando composer, js e bootstrap",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Émerson William"
+        }
+    ],
+    "require": {}
+}
