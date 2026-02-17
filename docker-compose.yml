@@ -1,0 +1,30 @@
+services:
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: web_server
+    ports:
+      - "80:80" # Mapeia a porta 80 do seu PC para a 80 do Docker (http://localhost)
+    volumes:
+      - .:/var/www/html # Sincroniza a pasta raiz do projeto
+    networks:
+      - rede_sistema
+
+ # Banco de Dados
+
+  db:
+    image: mysql:8.0 # Baixa o motor do banco de dados MySQL versão 8.0
+    container_name: banco_dados
+    restart: unless-stopped # Útil para o banco não morrer se houver um erro interno
+    environment:
+      MYSQL_ROOT_PASSWORD: root # Define a senha mestre do banco de dados
+      MYSQL_DATABASE: curso_db # Cria um banco de dados automaticamente com esse nome
+    ports:
+      - "3306:3306" # Porta padrão para programas como HeidiSQL ou DBeaver se conectarem
+    networks:
+      - rede_sistema
+# Cria uma rede interna para que os contêineres consigam "conversar" entre si
+networks:
+  rede_sistema:
+    driver: bridge
