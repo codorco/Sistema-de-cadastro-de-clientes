@@ -3,6 +3,9 @@
 // Define o endereço virtual desta classe (Namespace) para o Autoload do Composer encontrá-la
 namespace scc\System;
 
+use scc\Controllers\Main;
+use Exception;
+
 class Router 
 {
     // Método estático: pode ser chamado como Router::dispatch() sem precisar de "new Router"
@@ -44,16 +47,16 @@ class Router
             unset($parameters['mt']);
         }
 
-        // 9. Debug: mostra na tela o tipo de requisição (GET/POST)
-        var_dump($httpverb);
-        
-        // 10. Debug: mostra qual Controller o sistema decidiu usar
-        var_dump($controller);
-        
-        // 11. Debug: mostra qual função (método) será executada
-        var_dump($method);
-        
-        // 12. Debug: mostra apenas os dados extras (ex: id, nome, busca) que sobraram
-        var_dump($parameters);
+        // tries to instanciate the controller and execute the method
+
+        try {
+            $class = "scc\Controllers\\$controller";
+            $controller = new $class();
+            $controller->$method(...$parameters);
+        } catch (Exception $err) {
+            die($err->getMessage());
+        }
+
+
     }
 }
