@@ -1,1 +1,3 @@
 /vendor/
+/baseSQL/
+app/config.php
