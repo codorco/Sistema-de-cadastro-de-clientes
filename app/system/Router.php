@@ -49,10 +49,30 @@ class Router
 
         // tries to instanciate the controller and execute the method
 
+        // Tenta instanciar o controller e executar o método
         try {
+            // 1. Forçamos a primeira letra do controller a ser MAIÚSCULA
+            // Assim, 'main' vira 'Main' e o Linux encontra o arquivo Main.php
+            $controller = ucfirst($controller);
+
+            // 2. Montamos o nome da classe com o nome já corrigido
             $class = "scc\Controllers\\$controller";
-            $controller = new $class();
-            $controller->$method(...$parameters);
+
+            // 3. Verificamos se a classe realmente existe antes de tentar criá-la
+            if (!class_exists($class)) {
+                throw new Exception("O controller '$class' não foi encontrado.");
+            }
+
+            $controllerInstance = new $class();
+
+            // 4. Verificamos se a função (método) existe dentro daquela classe
+            if (!method_exists($controllerInstance, $method)) {
+                throw new Exception("O método '$method' não existe no controller '$controller'.");
+            }
+
+            // 5. Executa
+            $controllerInstance->$method(...$parameters);
+
         } catch (Exception $err) {
             die($err->getMessage());
         }

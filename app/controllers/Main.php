@@ -4,10 +4,15 @@ namespace scc\Controllers;
 
 class Main 
 {
-    public function index($id)
+    public function index()
     {
-        echo "Estou dentro do controlador Main - index";
-        echo '<br>';
-        echo "o id indicado foi $id";
+        echo "Estou dentro do controlador Main - index<br>";
+        echo 'ok';
+        teste();
+    }
+
+    public function teste()
+    {
+        die('aqui no teste!');
     }
 }
