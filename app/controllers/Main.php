@@ -1,17 +1,13 @@
 <?php
 
 namespace scc\Controllers;
+use scc\Controllers\BaseController;
 
-class Main 
+class Main extends BaseController
 {
-    public function index($id = null)
+    public function index()
     {
-        echo "Estou dentro do controlador Main - index<br>";
-        echo 'ok';
+        $this->view();
     }
 
-    public function teste()
-    {
-        die('aqui no teste!');
-    }
 }

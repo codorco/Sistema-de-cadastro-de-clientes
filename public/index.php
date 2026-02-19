@@ -5,7 +5,3 @@ use scc\System\Router;
 require_once('../vendor/autoload.php');
 
 Router::dispatch();
-
-$nomes = ['joao', 'ana', 'carlos'];
-$nome = "Noao";
-printData($nome);
