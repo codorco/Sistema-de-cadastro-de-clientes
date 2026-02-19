@@ -1,6 +1,15 @@
 <?php
-
-function teste()
+//Função para verificar dados
+function printData($data, $die = true)
 {
-    echo "<br>função de ajuda (helper) <br>";
+    echo '<pre>';
+    if(is_object($data) || is_array($data)){
+        print_r($data);
+    } else {
+        echo $data;
+    }
+
+    if($die){
+        die('<br>FIM<br>');
+    }
 }
