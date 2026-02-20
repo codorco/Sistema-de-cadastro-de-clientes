@@ -21,6 +21,6 @@ abstract class BaseModel
 
     public function query($sql = "", $params = [])
     {
-        return $this->db->execute_query($sql);
+        return $this->db->execute_query($sql, $params);
     }
 }
