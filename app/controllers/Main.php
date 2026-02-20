@@ -10,7 +10,7 @@ class Main extends BaseController
     // =======================================================
     public function index()
     {
-        // check if there is no active user in session
+        // Verifique se não há nenhum usuário ativo na sessão.
         if(!check_session())
         {
             $this->login_frm();
@@ -27,14 +27,14 @@ class Main extends BaseController
     // =======================================================
     public function login_frm()
     {
-        // check if there is already a user in the session
+        // Verificar se já existe um usuário na sessão.
         if(check_session())
         {
             $this->index();
             return;
         }
-
-        // check if there are errors (after login_submit)
+            
+        // Verificar se há erros (após login_submit)
         $data = [];
         if(!empty($_SESSION['validation_errors']))
         {
@@ -42,7 +42,7 @@ class Main extends BaseController
             unset($_SESSION['validation_errors']);
         }
 
-        // display login form
+        // Exibir formulário de login
         $this->view('layouts/html_header');
         $this->view('login_frm', $data);
         $this->view('layouts/html_footer');
@@ -51,19 +51,19 @@ class Main extends BaseController
     // =======================================================
     public function login_submit()
     {
-        // check if there is already an active session
+        // Verifique se já existe uma sessão ativa.
         if(check_session()){
             $this->index();
             return;
         }
 
-        // check if there was a post request
+        // verificar se houve uma solicitação de postagem
         if($_SERVER['REQUEST_METHOD'] != 'POST'){
             $this->index();
             return;
         }
 
-        // form validation
+        // validação de formulário
         $validation_errors = [];
         if(empty($_POST['text_username']) || empty($_POST['text_password'])){
             $validation_errors[] = "Username e password são obrigatórios.";
@@ -71,11 +71,11 @@ class Main extends BaseController
 
       
 
-        // get form data
+        // obtem dados do formulário
         $username = $_POST['text_username'];
         $password = $_POST['text_password'];
 
-        // check if username is valid email and between 5 and 50 chars
+        // Verifique se o nome de usuário é um e-mail válido e se tem entre 5 e 50 caracteres.
         if(!filter_var($username, FILTER_VALIDATE_EMAIL))
         {
             $validation_errors[] = 'O username tem que ser um email válido.';
@@ -84,7 +84,7 @@ class Main extends BaseController
           //  return;
         }
 
-        // check if username is between 5 and 50 chars
+        // Verifique se o nome de usuário tem entre 5 e 50 caracteres.
         if(strlen($username) < 5 || strlen($username) > 50){
             $validation_errors[] = 'O username deve ter entre 5 e 50 caracteres.';
             // $_SESSION['validation_errors'] = $validation_errors;
@@ -92,7 +92,7 @@ class Main extends BaseController
             // return;
         }
 
-        // check if password is valid
+        // Verifique se a senha é válida.
         if(strlen($password) < 6 || strlen($password) > 12){
             $validation_errors[] = 'A password deve ter entre 6 e 12 caracteres.';
             // $_SESSION['validation_errors'] = $validation_errors;
@@ -100,13 +100,19 @@ class Main extends BaseController
             // return;
         }
 
-          // check if there are validation errors
+          // Verifique se há erros de validação.
         if(!empty($validation_errors)){
             $_SESSION['validation_errors'] = $validation_errors;
             $this->login_frm();
             return;
         }
 
-        echo $username . '<br>' . $password;
+        $model = new Agents();
+        $result = $model->check_login($username, $password);
+        if($result['status']){
+            echo 'OK!';
+        } else {
+            echo 'NOK!';
+        }
     }
 }
