@@ -7,7 +7,9 @@
             "name": "Émerson William"
         }
     ],
-    "require": {},
+    "require": {
+        "monolog/monolog": "^3.10"
+    },
     "autoload": {
         "psr-4": {
             "scc\\Controllers\\":["app/controllers"],
