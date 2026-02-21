@@ -42,7 +42,7 @@ class Agents extends BaseModel
             'status' => true
         ];
     }
-
+    // =======================================================
     public function get_user_data($username)
     {
         // Obter todos os dados do usuário necessários para inserir na sessão
@@ -64,5 +64,21 @@ class Agents extends BaseModel
             'status' => 'success',
             'data' => $results->results[0]
         ];
+    }
+
+      // =======================================================
+     public function set_user_last_login($id)
+    {
+        // Atualiza o último login do usuário.
+        $params = [
+            ':id' => $id
+        ];
+        $this->db_connect();
+        $results = $this->non_query(
+            "UPDATE agents SET " . 
+            "last_login = NOW() " . 
+            "WHERE id = :id"
+        ,$params);
+        return $results;
     }
 }

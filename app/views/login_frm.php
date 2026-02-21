@@ -35,6 +35,12 @@
                                 </div>
                             <?php endif; ?>
 
+                            <?php if(!empty($server_error)): ?>
+                                <div class="alert alert-danger p-2 text-center">
+                                    <div><?= $server_error ?></div>
+                                </div>
+                            <?php endif; ?>
+
                         </form>
                     </div>
                 </div>
