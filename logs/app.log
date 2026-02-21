@@ -46,3 +46,5 @@
 [2026-02-21T02:51:28.474785+00:00] app_logs.INFO:  - fez logout [] []
 [2026-02-21T02:52:10.936833+00:00] app_logs.INFO: Um usuário tentou deslogar, mas a sessão já estava vazia. [] []
 [2026-02-21T02:54:42.968775+00:00] app_logs.INFO: admin@bng.com - Login com sucesso [] []
+[2026-02-21T22:24:44.725024+00:00] app_logs.INFO: admin@bng.com - Login com sucesso [] []
+[2026-02-21T22:29:14.683908+00:00] app_logs.INFO: admin@bng.com - Login com sucesso [] []

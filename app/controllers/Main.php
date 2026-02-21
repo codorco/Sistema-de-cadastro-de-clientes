@@ -109,9 +109,9 @@ class Main extends BaseController
         // Verifique se a senha é válida.
         if(strlen($password) < 6 || strlen($password) > 12){
             $validation_errors[] = 'A password deve ter entre 6 e 12 caracteres.';
-            // $_SESSION['validation_errors'] = $validation_errors;
-            // $this->login_frm();
-            // return;
+            $_SESSION['validation_errors'] = $validation_errors;
+            $this->login_frm();
+            return;
         }
 
         $model = new Agents();
