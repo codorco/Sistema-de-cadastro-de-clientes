@@ -154,7 +154,7 @@ class Main extends BaseController
         }
 
         // logger
-        logger($_SESSION['user']->name . ' - fez logout');
+        logger($_SESSION['user']->name . ' - Fez logout');
 
         // clear user from session
         unset($_SESSION['user']);

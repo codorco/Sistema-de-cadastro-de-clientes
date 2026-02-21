@@ -77,8 +77,8 @@ class Agents extends BaseModel
         $results = $this->non_query(
             "UPDATE agents SET " . 
             "last_login = NOW() " . 
-            "WHERE id = :id"
-        ,$params);
+            "WHERE id = :id",
+        $params);
         return $results;
     }
 }
