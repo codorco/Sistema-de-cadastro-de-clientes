@@ -137,12 +137,13 @@ class Agent extends BaseController
         // Adicionar novo cliente ao banco de dados
         $model->add_new_client_to_database($_POST);
 
+        // logger - NUNCA COLOCAR DADOS PESSOAIS NOS LOGS! Estou colocando a modo de treino. 
+        logger(get_active_user_name() . " - adicionou novo cliente: " . $_POST['text_name'] . ' | ' .$_POST['text_email']);
+
         // Voltar à página principal de clientes
         $this->my_clients();
 
-        /* 
-        criar a possibilidade dos inputs irem para o formulário novamente? old()
-        */
+
     }
 
     // =======================================================

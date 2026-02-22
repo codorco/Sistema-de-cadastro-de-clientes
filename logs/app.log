@@ -60,3 +60,4 @@
 [2026-02-22T23:14:11.850721+00:00] app_logs.INFO: agente2@bng.com - Login com sucesso [] []
 [2026-02-22T23:14:22.830389+00:00] app_logs.INFO: agente2@bng.com - Fez logout [] []
 [2026-02-22T23:14:29.962692+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
+[2026-02-22T23:35:40.624636+00:00] app_logs.INFO: agente1@bng.com - adicionou novo cliente: Rui martins | rui@sdadsad.com [] []
