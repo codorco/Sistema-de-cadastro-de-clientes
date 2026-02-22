@@ -81,4 +81,34 @@ class Agents extends BaseModel
         $params);
         return $results;
     }
+    // =======================================================
+    public function get_agent_clients($id_agent)
+    {
+        // Obtenha todos os clientes do agente com o id_agent especificado.
+        $params = [
+            ':id_agent' => $id_agent
+        ];
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT " .
+                "id, " .
+                "AES_DECRYPT(name, '" . MYSQL_AES_KEY . "') name, " .
+                "gender, " .
+                "birthdate, " .
+                "AES_DECRYPT(email, '" . MYSQL_AES_KEY . "') email, " .
+                "AES_DECRYPT(phone, '" . MYSQL_AES_KEY . "') phone, " .
+                "interests, " .
+                "created_at, " .
+                "updated_at " .
+                "FROM persons " .
+                "WHERE id_agent = :id_agent " .
+                "AND deleted_at IS NULL",
+            $params
+        );
+
+        return [
+            'status' => 'success',
+            'data' => $results->results
+        ];
+    }
 }
