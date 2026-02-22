@@ -134,7 +134,11 @@ class Agent extends BaseController
             return;
         }
 
-        printData($_POST);
+        // Adicionar novo cliente ao banco de dados
+        $model->add_new_client_to_database($_POST);
+
+        // Voltar à página principal de clientes
+        $this->my_clients();
 
         /* 
         criar a possibilidade dos inputs irem para o formulário novamente? old()
