@@ -9,4 +9,13 @@ define('MYSQL_USERNAME',    '');
 define('MYSQL_PASSWORD',    '');
 
 define('MYSQL_AES_KEY',     '');
+
+// logs
+define('LOGS_PATH',         __DIR__ . '/../logs/app.log');
+
+// openssl
+define('OPENSSL_KEY',       '');
+define('OPENSSL_IV',        '');
+
+
 // coloque os dados do seu banco e depois renomeie para config.php

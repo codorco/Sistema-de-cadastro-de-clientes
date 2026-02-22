@@ -148,12 +148,12 @@ class Agent extends BaseController
     // =======================================================
     public function edit_client($id)
     {
-        echo "editar $id";
+        echo "editar" . aes_decrypt($id);
     }
 
     // =======================================================
     public function delete_client($id)
     {
-        echo "eliminar $id";
+        echo "eliminar" . aes_decrypt($id);
     }
 }

@@ -56,3 +56,7 @@
 [2026-02-22T21:11:59.573003+00:00] app_logs.INFO: admin@bng.com - Login com sucesso [] []
 [2026-02-22T21:12:03.878939+00:00] app_logs.INFO: admin@bng.com - Fez logout [] []
 [2026-02-22T21:16:31.743763+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
+[2026-02-22T23:14:03.264728+00:00] app_logs.INFO: agente1@bng.com - Fez logout [] []
+[2026-02-22T23:14:11.850721+00:00] app_logs.INFO: agente2@bng.com - Login com sucesso [] []
+[2026-02-22T23:14:22.830389+00:00] app_logs.INFO: agente2@bng.com - Fez logout [] []
+[2026-02-22T23:14:29.962692+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
