@@ -52,7 +52,7 @@
                             </div>
                             
                             <div class="mb-3 text-center">
-                                <a href="?ct=main&mt=index" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
+                                <a href="?ct=agent&mt=my_clients" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
                                 <button type="submit" class="btn btn-secondary"><i class="fa-regular fa-floppy-disk me-2"></i>Guardar</button>
                             </div>
 
@@ -64,6 +64,12 @@
                                     <?php endforeach; ?>
                                 </ul>
                             </div>
+                            <?php endif; ?>
+
+                            <?php if(isset($server_error)):?>
+                                <div class="alert alert-danger p-2 text-center">
+                                    <?= $server_error ?>
+                                </div>
                             <?php endif; ?>
 
                         </form>
