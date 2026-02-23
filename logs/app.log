@@ -64,3 +64,8 @@
 [2026-02-23T00:39:46.440989+00:00] app_logs.INFO: agente1@bng.com - atualizou dados do cliente ID: 2 [] []
 [2026-02-23T00:39:58.950204+00:00] app_logs.INFO: agente1@bng.com - atualizou dados do cliente ID: 2 [] []
 [2026-02-23T00:55:21.781262+00:00] app_logs.INFO:  - Eliminado o cliente id: 7 [] []
+[2026-02-23T01:02:03.172672+00:00] app_logs.INFO: agente1@bng.com - Fez logout [] []
+[2026-02-23T01:02:13.300330+00:00] app_logs.ERROR: agente1@bng.com - login invalido [] []
+[2026-02-23T01:02:20.349549+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
+[2026-02-23T01:10:33.271087+00:00] app_logs.INFO: agente1@bng.com - Fez logout [] []
+[2026-02-23T01:11:26.280870+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
