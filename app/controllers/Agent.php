@@ -359,16 +359,65 @@ class Agent extends BaseController
         // exibir a visualização
         $data['user'] = $_SESSION['user'];
 
+        // check if there is a server error
+        if (!empty($_SESSION['server_error'])) {
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
         $this->view('layouts/html_header');
         $this->view('navbar', $data);
-        $this->view('upload_file_with_clients_frm');
+        $this->view('upload_file_with_clients_frm', $data);
         $this->view('footer');
         $this->view('layouts/html_footer');
     }
 
-    // =======================================================
+// =======================================================
     public function upload_file_submit()
     {
-        die('tratar ficheiro');
+        if (!check_session() || $_SESSION['user']->profile != 'agent') {
+            header('Location: index.php');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            header('Location: index.php');
+        }
+
+        // check if there is a uploaded file
+        if (empty($_FILES) || empty($_FILES['clients_file']['name'])) {
+            $_SESSION['server_error'] = "Faça o carregamento de um ficheiro XLSX ou CSV.";
+            $this->upload_file_frm();
+            return;
+        }
+
+        // check if the uploaded file extension is valid
+        $valid_extensions = ['xlsx', 'csv'];
+        $tmp = explode('.', $_FILES['clients_file']['name']);
+        $extension = end($tmp);
+        if (!in_array($extension, $valid_extensions)) {
+            $_SESSION['server_error'] = "O ficheiro deve ser do tipo XLSX ou CSV.";
+            $this->upload_file_frm();
+            return;
+        }
+
+        // check the size of the file: max = 2 MB
+        if ($_FILES['clients_file']['size'] > 2000000) {
+            $_SESSION['server_error'] = "O ficheiro deve ter, no máximo, 2 MB.";
+            $this->upload_file_frm();
+            return;
+        }
+
+        // move file to final destination
+        $file_path = __DIR__ . '/../../uploads/dados_' . time() . '.' . $extension;
+        if (move_uploaded_file($_FILES['clients_file']['tmp_name'], $file_path)) {
+
+            // the file was uploaded correctly.
+            // ready to charge data into the database
+            die('ficheiro carregado com sucesso.');
+        } else {
+            $_SESSION['server_error'] = "Aconteceu um erro inesperado no carregamento do ficheiro.";
+            $this->upload_file_frm();
+            return;
+        }
     }
 }

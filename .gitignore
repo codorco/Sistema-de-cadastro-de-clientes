@@ -1,3 +1,4 @@
 /vendor/
 /baseSQL/
+/uploads/
 app/config.php

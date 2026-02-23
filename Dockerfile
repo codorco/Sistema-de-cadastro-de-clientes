@@ -1,11 +1,12 @@
 FROM php:8.2-apache
 
-# 1. Instala extensões PDO e ferramentas que o Composer exige (zip/unzip)
+# 1. Instala extensões PDO, ferramentas do Composer e a biblioteca GD
 RUN apt-get update && apt-get install -y \
     libzip-dev \
+    libpng-dev \
     zip \
     unzip \
-    && docker-php-ext-install pdo pdo_mysql zip
+    && docker-php-ext-install pdo pdo_mysql zip gd
 
 # 2. Instala o Composer copiando da imagem oficial (Muito mais rápido)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
