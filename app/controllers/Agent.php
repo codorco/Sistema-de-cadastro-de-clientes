@@ -359,7 +359,7 @@ class Agent extends BaseController
         // exibir a visualização
         $data['user'] = $_SESSION['user'];
 
-        // check if there is a server error
+        // Verifica se há algum erro no servidor.
         if (!empty($_SESSION['server_error'])) {
             $data['server_error'] = $_SESSION['server_error'];
             unset($_SESSION['server_error']);
@@ -383,14 +383,14 @@ class Agent extends BaseController
             header('Location: index.php');
         }
 
-        // check if there is a uploaded file
+        // Verifica se há algum arquivo carregado.
         if (empty($_FILES) || empty($_FILES['clients_file']['name'])) {
             $_SESSION['server_error'] = "Faça o carregamento de um ficheiro XLSX ou CSV.";
             $this->upload_file_frm();
             return;
         }
 
-        // check if the uploaded file extension is valid
+        // Verifica se a extensão do arquivo enviado é válida.
         $valid_extensions = ['xlsx', 'csv'];
         $tmp = explode('.', $_FILES['clients_file']['name']);
         $extension = end($tmp);
@@ -400,24 +400,54 @@ class Agent extends BaseController
             return;
         }
 
-        // check the size of the file: max = 2 MB
+        // Verifica o tamanho do arquivo: máximo = 2 MB
         if ($_FILES['clients_file']['size'] > 2000000) {
             $_SESSION['server_error'] = "O ficheiro deve ter, no máximo, 2 MB.";
             $this->upload_file_frm();
             return;
         }
 
-        // move file to final destination
+        // Mover arquivo para o destino final
         $file_path = __DIR__ . '/../../uploads/dados_' . time() . '.' . $extension;
         if (move_uploaded_file($_FILES['clients_file']['tmp_name'], $file_path)) {
 
-            // the file was uploaded correctly.
-            // ready to charge data into the database
-            die('ficheiro carregado com sucesso.');
+           // valida o cabeçalho
+            $result = $this->has_valid_header($file_path);
+            var_dump($result);
         } else {
             $_SESSION['server_error'] = "Aconteceu um erro inesperado no carregamento do ficheiro.";
             $this->upload_file_frm();
             return;
         }
+    }
+// =======================================================
+    private function has_valid_header($file_path)
+    {
+        // valida o arquivo
+        $data = [];
+        $file_info = pathinfo($file_path);
+
+        if($file_info['extension'] == 'csv'){
+
+            // Abre o arquivo CSV para ler apenas o cabeçalho.
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+            $reader->setInputEncoding('UTF-8');
+            $reader->setDelimiter(';');
+            $reader->setEnclosure('');
+            $sheet = $reader->load($file_path);
+            $data = $sheet->getActiveSheet()->toArray()[0];
+
+        } else if($file_info['extension'] == 'xlsx') {
+
+            // Abre o arquivo XLSX para ler apenas o cabeçalho.
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file_path);
+            $data = $spreadsheet->getActiveSheet()->toArray()[0];
+        }
+
+        // Verifique se o conteúdo do cabeçalho é válido.
+        $valid_header = 'name,gender,birthdate,email,phone,interests';
+        return implode(',', $data) == $valid_header ? true : false;
     }
 }
