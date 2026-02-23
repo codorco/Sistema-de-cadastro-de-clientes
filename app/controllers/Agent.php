@@ -413,7 +413,18 @@ class Agent extends BaseController
 
            // valida o cabeçalho
             $result = $this->has_valid_header($file_path);
-            var_dump($result);
+            if ($result) {
+
+                // O cabeçalho está correto. Carregue as informações do arquivo no banco de dados.
+                $results = $this->load_file_data_to_database($file_path);
+                
+            } else {
+
+                // O cabeçalho não está correto..
+                $_SESSION['server_error'] = "O ficheiro não tem o header no formato correto.";
+                $this->upload_file_frm();
+                return;
+            }
         } else {
             $_SESSION['server_error'] = "Aconteceu um erro inesperado no carregamento do ficheiro.";
             $this->upload_file_frm();
@@ -449,5 +460,61 @@ class Agent extends BaseController
         // Verifique se o conteúdo do cabeçalho é válido.
         $valid_header = 'name,gender,birthdate,email,phone,interests';
         return implode(',', $data) == $valid_header ? true : false;
+    }
+
+  // =======================================================
+    private function load_file_data_to_database($file_path)
+    {
+        $data = [];
+        $file_info = pathinfo($file_path);
+
+        if ($file_info['extension'] == 'csv') {
+
+            // Abre o arquivo CSV
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
+            $reader->setInputEncoding('UTF-8');
+            $reader->setDelimiter(';');
+            $reader->setEnclosure('');
+            $sheet = $reader->load($file_path);
+            $data = $sheet->getActiveSheet()->toArray();
+        } else if ($file_info['extension'] == 'xlsx') {
+
+            // Abre o arquivo XLSX
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($file_path);
+            $data = $spreadsheet->getActiveSheet()->toArray();
+        }
+
+        // inserir dados no banco de dados
+        $model = new Agents();
+
+        // Extraia o cabeçalho de $data
+        array_shift($data);
+
+        // cria um círculo para inserir cada registro
+        foreach($data as $client){
+
+            // verificar se o cliente já existe no banco de dados
+            $exists = $model->check_if_client_exists(['text_name' => $client[0]]);
+            if(!$exists['status']){
+
+                // Adicionar cliente ao banco de dados
+                $post_data = [
+                    'text_name' => $client[0],
+                    'radio_gender' => $client[1],
+                    'text_birthdate' => $client[2],
+                    'text_email' => $client[3],
+                    'text_phone' => $client[4],
+                    'text_interests' => $client[5],
+                ];
+
+                $model->add_new_client_to_database($post_data);
+                
+            } else {
+                
+                // O cliente já existe.
+            }
+        }
     }
 }
