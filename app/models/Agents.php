@@ -172,4 +172,90 @@ class Agents extends BaseModel
             $params
         );
     }
+// =======================================================
+    public function get_client_data($id_client)
+    {
+        // Obter dados do cliente por ID
+        $params = [
+            ':id_client' => $id_client
+        ];
+
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT " . 
+            "id, " . 
+            "AES_DECRYPT(name, '" . MYSQL_AES_KEY . "') name, " . 
+            "gender, " . 
+            "birthdate, " . 
+            "AES_DECRYPT(email, '" . MYSQL_AES_KEY . "') email, " . 
+            "AES_DECRYPT(phone, '" . MYSQL_AES_KEY . "') phone, " . 
+            "interests " . 
+            "FROM persons " . 
+            "WHERE id = :id_client"
+        , $params);
+
+        if($results->affected_rows == 0){
+            return [
+                'status' => 'error'
+            ];
+        }
+
+        return [
+            'status' => 'success',
+            'data' => $results->results[0]
+        ];
+    }
+// =======================================================
+    public function check_other_client_with_same_name($id, $name)
+    {
+        // Verificar se já existe outro cliente do mesmo agente com o mesmo nome.
+        $params = [
+            ':id' => $id,
+            ':name' => $name,
+            ':id_agent' => $_SESSION['user']->id
+        ];
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT id " .
+                "FROM persons " .
+                "WHERE id <> :id " .
+                "AND id_agent = :id_agent " .
+                "AND AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "') = name",
+            $params
+        );
+
+        if ($results->affected_rows != 0) {
+            return ['status' => true];
+        } else {
+            return ['status' => false];
+        }
+    }
+
+    // =======================================================
+    public function update_client_data($id, $post_data)
+    {
+        // Atualiza os dados do cliente do agente no banco de dados.
+        $birthdate = new \DateTime($post_data['text_birthdate']);
+        $params = [
+            ':id' => $id,
+            ':name' => $post_data['text_name'],
+            ':gender' => $post_data['radio_gender'],
+            ':birthdate' => $birthdate->format('Y-m-d H:i:s'),
+            ':email' => $post_data['text_email'],
+            ':phone' => $post_data['text_phone'],
+            ':interests' => $post_data['text_interests'],
+        ];
+        $this->db_connect();
+        $this->non_query(
+            "UPDATE persons SET " . 
+            "name = AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "'), " .
+            "gender = :gender, " . 
+            "birthdate = :birthdate, " . 
+            "email = AES_ENCRYPT(:email, '" . MYSQL_AES_KEY . "'), " .
+            "phone = AES_ENCRYPT(:phone, '" . MYSQL_AES_KEY . "'), " .
+            "interests = :interests, " . 
+            "updated_at = NOW() " . 
+            "WHERE id = :id"
+        , $params);
+    }
 }
