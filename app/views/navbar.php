@@ -2,7 +2,7 @@
     <div class="row">
 
         <div class="col-6 d-flex align-content-center p-3">
-            <img src="assets/images/logo_32.png" alt="logo bng" height="32" class="me-3">
+            <a href="?ct=main&mt=index"><img src="assets/images/logo_32.png" alt="logo bng" height="32" class="me-3"></a>
             <h3><?= APP_NAME ?></h3>
         </div>
 

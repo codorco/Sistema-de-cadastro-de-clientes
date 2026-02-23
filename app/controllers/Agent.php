@@ -289,9 +289,63 @@ class Agent extends BaseController
         $this->my_clients();
     }
 
-    // =======================================================
+      // =======================================================
     public function delete_client($id)
     {
-        echo "eliminar" . aes_decrypt($id);
+        if (!check_session() || $_SESSION['user']->profile != 'agent') {
+            header('Location: index.php');
+        }
+
+        // Verifica se o $id é válido.
+        $id_client = aes_decrypt($id);
+        if(!$id_client){
+
+            // id_client é inválido
+            header('Location: index.php');
+        }
+
+        // Carrega o modelo para obter os dados do cliente.
+        $model = new Agents();
+        $results = $model->get_client_data($id_client);
+
+        if(empty($results['data'])){
+            header('Location: index.php');
+        }
+
+        // exibe a visualização
+        $data['user'] = $_SESSION['user'];
+        $data['client'] = $results['data'];
+
+        $this->view('layouts/html_header');
+        $this->view('navbar', $data);
+        $this->view('delete_client_confirmation', $data);
+        $this->view('footer');
+        $this->view('layouts/html_footer');
+    }
+
+    // =======================================================
+    public function delete_client_confirm($id)
+    {
+        if (!check_session() || $_SESSION['user']->profile != 'agent') {
+            header('Location: index.php');
+        }
+
+        // Verifique se o $id é válido.
+        $id_client = aes_decrypt($id);
+        if(!$id_client){
+
+            // id_client é inválido
+            header('Location: index.php');
+        }
+
+        // Carrega o modelo para excluir os dados do cliente.
+        $model = new Agents();
+        $model->delete_client($id_client);
+
+        // logger
+        logger(get_current_user() . ' - Eliminado o cliente id: ' . $id_client);
+
+        // Retorna à página principal do agente.
+        $this->my_clients();
     }
 }

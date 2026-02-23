@@ -63,3 +63,4 @@
 [2026-02-22T23:35:40.624636+00:00] app_logs.INFO: agente1@bng.com - adicionou novo cliente: Rui martins | rui@sdadsad.com [] []
 [2026-02-23T00:39:46.440989+00:00] app_logs.INFO: agente1@bng.com - atualizou dados do cliente ID: 2 [] []
 [2026-02-23T00:39:58.950204+00:00] app_logs.INFO: agente1@bng.com - atualizou dados do cliente ID: 2 [] []
+[2026-02-23T00:55:21.781262+00:00] app_logs.INFO:  - Eliminado o cliente id: 7 [] []

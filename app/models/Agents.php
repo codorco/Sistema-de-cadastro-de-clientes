@@ -258,4 +258,13 @@ class Agents extends BaseModel
             "WHERE id = :id"
         , $params);
     }
+     public function delete_client($id_client)
+    {
+        // Exclui o cliente do banco de dados (exclusão permanente).
+        $params = [
+            ':id' => $id_client
+        ];
+        $this->db_connect();
+        $this->non_query("DELETE FROM persons WHERE id = :id", $params);
+    }
 }
