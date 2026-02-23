@@ -8,11 +8,11 @@
 
                         <h4 class="mb-4"><strong>Carregar ficheiro de clientes</strong></h4>
                         
-                        <p class="text-center">Carregar ficheiro em formato CSV. Se não tem o template do ficheiro, faça download <a href="#">AQUI</a></p>
+                        <p class="text-center">Carregar ficheiro em formato XLSX ou CSV. Se não tem o template do ficheiro, faça download <a href="#">AQUI</a></p>
 
                         <hr>
 
-                        <form action="#" method="post" enctype="multipart/form-data">
+                        <form action="?ct=agent&mt=upload_file_submit" method="post" enctype="multipart/form-data">
 
                             <div class="mb-4">
                                 <label for="clients_file" class="form-label">Ficheiro de clientes</label>
@@ -20,7 +20,7 @@
                             </div>
                             
                             <div class="mb-4 text-center">
-                                <a href="#" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
+                                <a href="?ct=agent&mt=my_clients" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
                                 <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-upload me-2"></i>Carregar</button>
                             </div>
 

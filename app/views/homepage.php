@@ -25,7 +25,7 @@
 
             <!-- carregar ficheiro de clientes -->
             <?php if ($user->profile == 'agent') : ?>
-                <a href="#" class="unlink m-2">
+                <a href="?ct=agent&mt=upload_file_frm" class="unlink m-2">
                     <div class="home-option p-5 text-center">
                         <h3 class="mb-3"><i class="fa-solid fa-upload"></i></h3>
                         <h5>Carregar ficheiro</h5>
