@@ -9,7 +9,8 @@
     ],
     "require": {
         "monolog/monolog": "^3.10",
-        "phpoffice/phpspreadsheet": "^5.4"
+        "phpoffice/phpspreadsheet": "^5.4",
+        "mpdf/mpdf": "^8.2"
     },
     "autoload": {
         "psr-4": {

@@ -42,7 +42,7 @@
                 <div class="col-sm-6 col-12 p-1">
                     <div class="card p-3">
                         <h4><i class="fa-solid fa-users me-2"></i>Gráfico</h4>
-                        <canvas id="chartjs_chart" height="300px"></canvas>
+                        <canvas id="chartjs_chart" height="400px"></canvas>
                     </div>
                 </div>
             </div>
@@ -94,6 +94,10 @@
                                     </tr>
                                 </table>
                             </div>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="?ct=admin&mt=create_pdf_report" target="_blank" class="btn btn-secondary px-4"><i class="fa-solid fa-file-pdf me-2"></i>Criar relatório em PDF</a>
                         </div>
 
                     </div>
