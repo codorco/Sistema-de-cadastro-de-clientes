@@ -50,4 +50,62 @@ class AdminModel extends BaseModel
         $results = $this->query($sql);
         return $results->results;
     }
+ // =======================================================
+    public function get_global_stats()
+    {
+        // Obtenha estatísticas globais do banco de dados.
+
+        // agentes totais
+        $this->db_connect();
+        $results['total_agents'] = $this->query("SELECT count(*) value FROM agents")->results[0];
+
+        // total de clientes ativos
+        $results['total_clients'] = $this->query("SELECT count(*) value FROM persons WHERE deleted_at IS NULL")->results[0];
+
+        // Total de clientes inativos (excluídos)
+        $results['total_deleted_clients'] = $this->query("SELECT count(*) value FROM persons WHERE deleted_at IS NOT NULL")->results[0];
+
+        // número médio de clientes por agente
+        $results['average_clients_per_agent'] = $this->query(
+            "SELECT (total_persons / total_agents) value FROM " .
+            "( " .
+            "SELECT " .
+            "(SELECT COUNT(*) FROM persons) total_persons, " .
+            "(SELECT COUNT(*) FROM agents WHERE PROFILE = 'agent') total_agents " .
+            ") a "
+        )->results[0];
+
+        // cliente mais jovem
+        $results['younger_client'] = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate DESC LIMIT 1")->results[0];
+
+        // cliente mais velho
+        $results['oldest_client'] = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate ASC LIMIT 1")->results[0];
+
+        // average age between all clients
+        $results['average_age'] = $this->query("SELECT AVG(TIMESTAMPDIFF(YEAR,birthdate,CURDATE())) value FROM persons")->results[0];
+
+        //Percentagem por género - homens
+        $results['percentage_males'] = $this->query(
+            "SELECT " .
+            "CAST((total_males/total_clients) * 100 AS DECIMAL(5,2)) value " .
+            "FROM " .
+            "( " .
+            "SELECT " .
+            "(SELECT COUNT(*) FROM persons) total_clients, " .
+            "(SELECT COUNT(*) FROM persons WHERE gender = 'm') total_males" .
+            ") a ")->results[0];
+        
+        //Percentagem por género - mulheres
+        $results['percentage_females'] = $this->query(
+            "SELECT " .
+            "CAST((total_females/total_clients) * 100 AS DECIMAL(5,2)) value " .
+            "FROM " .
+            "( " .
+            "SELECT " .
+            "(SELECT COUNT(*) FROM persons) total_clients, " .
+            "(SELECT COUNT(*) FROM persons WHERE gender = 'f') total_females" .
+            ") a")->results[0];
+        
+        return $results;
+    }
 }

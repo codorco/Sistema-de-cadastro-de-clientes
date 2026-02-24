@@ -52,7 +52,50 @@
 
                     <div class="card p-3">
                         <h4><i class="fa-solid fa-list-ul me-2"></i>Dados estatísticos globais</h4>
-                        [dados estatísticos]
+
+                        <div class="row justify-content-center">
+                            <div class="col-5">
+                                <table class="table table-striped">
+                                    <tr>
+                                        <td class="text-start">Número total de agentes:</td>
+                                        <td class="text-start"><strong><?= $global_stats['total_agents']->value ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Número total de clientes:</td>
+                                        <td class="text-start"><strong><?= $global_stats['total_clients']->value ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Número total de clientes inativos:</td>
+                                        <td class="text-start"><strong><?= $global_stats['total_deleted_clients']->value ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Número médio de clientes por agente:</td>
+                                        <td class="text-start"><strong><?= sprintf("%d", $global_stats['average_clients_per_agent']->value) ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Idade do cliente mais novo:</td>
+                                        <td class="text-start"><strong><?= $global_stats['younger_client']->value ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Idade do cliente mais velho:</td>
+                                        <td class="text-start"><strong><?= $global_stats['oldest_client']->value ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Média de idades dos clientes:</td>
+                                        <td class="text-start"><strong><?= sprintf("%.2f", $global_stats['average_age']->value) ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Percentagem de clientes homens:</td>
+                                        <td class="text-start"><strong><?= sprintf("%.2f", $global_stats['percentage_males']->value) . "%" ?></strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-start">Percentagem de clientes mulheres:</td>
+                                        <td class="text-start"><strong><?= sprintf("%.2f", $global_stats['percentage_females']->value) . '%' ?></strong></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
                     </div>
 
                 </div>
@@ -109,7 +152,7 @@
             document.querySelector('#chartjs_chart'), {
                 type: 'bar',
                 data: {
-                    labels: <?= $chart_labels?>,
+                    labels: <?= $chart_labels ?>,
                     datasets: [{
                         label: 'Total de clientes por agente',
                         data: <?= $chart_totals ?>,
