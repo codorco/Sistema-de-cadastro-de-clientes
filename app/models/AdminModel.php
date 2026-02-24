@@ -12,45 +12,45 @@ class AdminModel extends BaseModel
         // Obtem todos os clientes de todos os agentes.
         $this->db_connect();
         $results = $this->query(
-            "SELECT " . 
-            "p.id, " . 
-            "AES_DECRYPT(p.name, '" . MYSQL_AES_KEY . "') name, " . 
-            "p.gender, " . 
-            "p.birthdate, " . 
-            "AES_DECRYPT(p.email, '" . MYSQL_AES_KEY . "') email, " . 
-            "AES_DECRYPT(p.phone, '" . MYSQL_AES_KEY . "') phone, " . 
-            "p.interests, " . 
-            "p.created_at, " . 
-            "AES_DECRYPT(a.name, '" . MYSQL_AES_KEY . "') agent " . 
-            "FROM persons p LEFT JOIN agents a " . 
-            "ON p.id_agent = a.id " . 
-            "WHERE p.deleted_at IS NULL " . 
-            "ORDER BY created_at DESC"
+            "SELECT " .
+                "p.id, " .
+                "AES_DECRYPT(p.name, '" . MYSQL_AES_KEY . "') name, " .
+                "p.gender, " .
+                "p.birthdate, " .
+                "AES_DECRYPT(p.email, '" . MYSQL_AES_KEY . "') email, " .
+                "AES_DECRYPT(p.phone, '" . MYSQL_AES_KEY . "') phone, " .
+                "p.interests, " .
+                "p.created_at, " .
+                "AES_DECRYPT(a.name, '" . MYSQL_AES_KEY . "') agent " .
+                "FROM persons p LEFT JOIN agents a " .
+                "ON p.id_agent = a.id " .
+                "WHERE p.deleted_at IS NULL " .
+                "ORDER BY created_at DESC"
         );
         return $results;
     }
-// =======================================================
+    // =======================================================
     public function get_agents_clients_stats()
     {
         // Obtem os totais dos clientes do agente.
-        $sql = 
-        "SELECT * FROM (" .
-        "SELECT " .
-        "p.id_agent, " .
-        "AES_DECRYPT(a.name, '" . MYSQL_AES_KEY . "') agente, " .
-        "COUNT(*) total_clientes " .
-        "FROM persons p " .
-        "LEFT JOIN agents a " .
-        "ON a.id = p.id_agent " .
-        "WHERE p.deleted_at IS NULL " .
-        "GROUP BY id_agent ) a " .
-        "ORDER BY total_clientes DESC";
+        $sql =
+            "SELECT * FROM (" .
+            "SELECT " .
+            "p.id_agent, " .
+            "AES_DECRYPT(a.name, '" . MYSQL_AES_KEY . "') agente, " .
+            "COUNT(*) total_clientes " .
+            "FROM persons p " .
+            "LEFT JOIN agents a " .
+            "ON a.id = p.id_agent " .
+            "WHERE p.deleted_at IS NULL " .
+            "GROUP BY id_agent ) a " .
+            "ORDER BY total_clientes DESC";
 
         $this->db_connect();
         $results = $this->query($sql);
         return $results->results;
     }
- // =======================================================
+    // =======================================================
     public function get_global_stats()
     {
         // Obtenha estatísticas globais do banco de dados.
@@ -68,11 +68,11 @@ class AdminModel extends BaseModel
         // número médio de clientes por agente
         $results['average_clients_per_agent'] = $this->query(
             "SELECT (total_persons / total_agents) value FROM " .
-            "( " .
-            "SELECT " .
-            "(SELECT COUNT(*) FROM persons) total_persons, " .
-            "(SELECT COUNT(*) FROM agents WHERE PROFILE = 'agent') total_agents " .
-            ") a "
+                "( " .
+                "SELECT " .
+                "(SELECT COUNT(*) FROM persons) total_persons, " .
+                "(SELECT COUNT(*) FROM agents WHERE PROFILE = 'agent') total_agents " .
+                ") a "
         )->results[0];
 
         // cliente mais jovem
@@ -87,25 +87,47 @@ class AdminModel extends BaseModel
         //Percentagem por género - homens
         $results['percentage_males'] = $this->query(
             "SELECT " .
-            "CAST((total_males/total_clients) * 100 AS DECIMAL(5,2)) value " .
-            "FROM " .
-            "( " .
-            "SELECT " .
-            "(SELECT COUNT(*) FROM persons) total_clients, " .
-            "(SELECT COUNT(*) FROM persons WHERE gender = 'm') total_males" .
-            ") a ")->results[0];
-        
+                "CAST((total_males/total_clients) * 100 AS DECIMAL(5,2)) value " .
+                "FROM " .
+                "( " .
+                "SELECT " .
+                "(SELECT COUNT(*) FROM persons) total_clients, " .
+                "(SELECT COUNT(*) FROM persons WHERE gender = 'm') total_males" .
+                ") a "
+        )->results[0];
+
         //Percentagem por género - mulheres
         $results['percentage_females'] = $this->query(
             "SELECT " .
-            "CAST((total_females/total_clients) * 100 AS DECIMAL(5,2)) value " .
-            "FROM " .
-            "( " .
-            "SELECT " .
-            "(SELECT COUNT(*) FROM persons) total_clients, " .
-            "(SELECT COUNT(*) FROM persons WHERE gender = 'f') total_females" .
-            ") a")->results[0];
-        
+                "CAST((total_females/total_clients) * 100 AS DECIMAL(5,2)) value " .
+                "FROM " .
+                "( " .
+                "SELECT " .
+                "(SELECT COUNT(*) FROM persons) total_clients, " .
+                "(SELECT COUNT(*) FROM persons WHERE gender = 'f') total_females" .
+                ") a"
+        )->results[0];
+
+        return $results;
+    }
+    // =======================================================
+    public function get_agents_for_management()
+    {
+        // Obtem dados de agentes para o gerenciamento de agentes administrativos
+
+        $this->db_connect();
+        $results = $this->query("
+            SELECT
+                id,
+                AES_DECRYPT(name, '" . MYSQL_AES_KEY . "') `name`,
+                profile,
+                last_login,
+                created_at,
+                updated_at,
+                deleted_at
+            FROM agents
+        ");
+
         return $results;
     }
 }

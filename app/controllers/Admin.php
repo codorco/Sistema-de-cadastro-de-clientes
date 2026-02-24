@@ -29,7 +29,7 @@ class Admin extends BaseController
         $this->view('footer');
         $this->view('layouts/html_footer');
     }
-// =======================================================
+    // =======================================================
     public function export_clients_XLSX()
     {
         // Verifica se a sessão possui um usuário com perfil de administrador.
@@ -46,18 +46,18 @@ class Admin extends BaseController
         $data[] = ['name', 'gender', 'birthdate', 'email', 'phone', 'interests', 'agent', 'created_at'];
 
         // Coloca todos os clientes na ordem $data
-        foreach($results as $client){
-    $data[] = [
-        $client->name,
-        $client->gender,
-        $client->birthdate,
-        $client->email,
-        $client->phone,
-        $client->interests,
-        $client->agent,
-        $client->created_at
-    ];
-}
+        foreach ($results as $client) {
+            $data[] = [
+                $client->name,
+                $client->gender,
+                $client->birthdate,
+                $client->email,
+                $client->phone,
+                $client->interests,
+                $client->agent,
+                $client->created_at
+            ];
+        }
 
         // Armazena os dados no arquivo XLSX.
         $filename = 'output_' . time() . '.xlsx';
@@ -69,13 +69,13 @@ class Admin extends BaseController
 
         $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="'. urlencode($filename).'"');
+        header('Content-Disposition: attachment; filename="' . urlencode($filename) . '"');
         $writer->save('php://output');
 
         // logger
         logger(get_active_user_name() . " - fez download da lista de clientes para o ficheiro: " . $filename . " | total: " . count($data) - 1 . " registos.");
     }
-// =======================================================
+    // =======================================================
     public function stats()
     {
         // Verifica se a sessão possui um usuário com perfil de administrador.
@@ -90,11 +90,11 @@ class Admin extends BaseController
         // Exibe a página de estatísticas
         $data['user'] = $_SESSION['user'];
 
-           // Preparar dados para o Chart.js
-        if(count($data['agents']) != 0){
+        // Preparar dados para o Chart.js
+        if (count($data['agents']) != 0) {
             $labels_tmp = [];
             $totals_tmp = [];
-            foreach($data['agents'] as $agent){
+            foreach ($data['agents'] as $agent) {
                 $labels_tmp[] = $agent->agente;
                 $totals_tmp[] = $agent->total_clientes;
             }
@@ -219,5 +219,26 @@ class Admin extends BaseController
         $pdf->WriteHTML($html);
 
         $pdf->Output();
+    }
+    // =======================================================
+    public function agents_management()
+    {
+        // Verifica se a sessão possui um usuário com perfil de administrador.
+        if (!check_session() || $_SESSION['user']->profile != 'admin') {
+            header('Location: index.php');
+        }
+
+        // obtem agentes
+        $model = new AdminModel();
+        $results = $model->get_agents_for_management();
+        $data['agents'] = $results->results;
+
+        $data['user'] = $_SESSION['user'];
+
+        $this->view('layouts/html_header', $data);
+        $this->view('navbar', $data);
+        $this->view('agents_management', $data);
+        $this->view('footer');
+        $this->view('layouts/html_footer');
     }
 }

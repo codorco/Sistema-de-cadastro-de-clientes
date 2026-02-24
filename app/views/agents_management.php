@@ -13,47 +13,59 @@
 
             <hr>
 
-            <p class="my-5 text-center opacity-75">Não existem agentes registados.</p>
+            <?php if (count($agents) == 0) : ?>
 
-            <div class="mb-5 text-center">
-            <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
-            </div>
+                <p class="my-5 text-center opacity-75">Não existem agentes registados.</p>
 
-            <table class="table table-striped table-bordered">
-                <thead class="table-dark">
-                    <tr>
-                        <th>Nome</th>
-                        <th class="text-center">Perfil</th>
-                        <th class="text-center">Último login</th>
-                        <th class="text-center">Total clientes</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>[Nome do agente]</td>
-                        <td class="text-center">[perfil]</td>
-                        <td class="text-center">[último login]</td>
-                        <td class="text-center">[total clientes]</td>
-                        <td class="text-end">
-                            <a href="#"><i class="fa-regular fa-pen-to-square me-2"></i>Editar</a>
-                            <span class="mx-2 opacity-50">|</span>
-                            <a href="#"><i class="fa-solid fa-trash-can me-2"></i>Eliminar</a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="row">
-                <div class="col">
-                    <p class="mb-5">Total: <strong>[0]</strong></p>
+                <div class="mb-5 text-center">
+                    <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
                 </div>
-                <div class="col text-end">
-                    <a href="#" class="btn btn-secondary px-4"><i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX</a>
-                    <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
+
+            <?php else : ?>
+
+                <table class="table table-striped table-bordered">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nome</th>
+                            <th class="text-center">Perfil</th>
+                            <th class="text-center">Último login</th>
+                            <th class="text-center">Criado em</th>
+                            <th class="text-center">Atualizado em</th>
+                            <th class="text-center">Eliminado em</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($agents as $agent) : ?>
+                            <tr>
+                                <td><?= $agent->name?></td>
+                                <td class="text-center"><?= $agent->profile ?></td>
+                                <td class="text-center"><?= $agent->last_login ?></td>
+                                <td class="text-center"><?= $agent->created_at ?></td>
+                                <td class="text-center"><?= $agent->updated_at ?></td>
+                                <td class="text-center"><?= $agent->deleted_at ?></td>
+                                <td class="text-end">
+                                    <a href="#"><i class="fa-regular fa-pen-to-square me-2"></i>Editar</a>
+                                    <span class="mx-2 opacity-50">|</span>
+                                    <a href="#"><i class="fa-solid fa-trash-can me-2"></i>Eliminar</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+                <div class="row">
+                    <div class="col">
+                        <p class="mb-5">Total: <strong> <?= count($agents) ?></strong></p>
+                    </div>
+                    <div class="col text-end">
+                        <a href="#" class="btn btn-secondary px-4"><i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX</a>
+                        <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
+                    </div>
                 </div>
-            </div>
-            
+
+            <?php endif; ?>
+
         </div>
     </div>
 </div>
