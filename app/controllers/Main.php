@@ -164,7 +164,7 @@ class Main extends BaseController
     }
 
    
-    // =======================================================
+ // =======================================================
     // alteração de senha do perfil
     // =======================================================
     public function change_password_frm()
@@ -245,14 +245,14 @@ class Main extends BaseController
             return;
         }
 
-        if(strlen($new_password < 6 || strlen($new_password) > 12)){
+        if(strlen($new_password) < 6 || strlen($new_password) > 12){
             $validation_errors[] = "A nova password deve ter entre 6 e 12 caracteres.";
             $_SESSION['validation_errors'] = $validation_errors;
             $this->change_password_frm();
             return;
         }
         
-        if(strlen($repeat_new_password < 6 || strlen($repeat_new_password) > 12)){
+        if(strlen($repeat_new_password) < 6 || strlen($repeat_new_password) > 12){
             $validation_errors[] = "A repetição da nova password deve ter entre 6 e 12 caracteres.";
             $_SESSION['validation_errors'] = $validation_errors;
             $this->change_password_frm();
@@ -283,7 +283,7 @@ class Main extends BaseController
 
         // Verifica se a nova senha e a nova senha repetida têm valores iguais.
         if($new_password != $repeat_new_password){
-            $validation_errors[] = "A nova password e a sua repetição não são iguais.";
+            $validation_errors[] = "A password e a sua repetição não são iguais.";
             $_SESSION['validation_errors'] = $validation_errors;
             $this->change_password_frm();
             return;
@@ -318,6 +318,7 @@ class Main extends BaseController
         $this->view('footer');
         $this->view('layouts/html_footer');
     }
+
     // =======================================================
     public function define_password($purl = '')
     {
@@ -340,6 +341,12 @@ class Main extends BaseController
             die('Erro nas credenciais de acesso.');
         }
 
+        // verificar erros de validação
+        if(isset($_SESSION['validation_error'])){
+            $data['validation_error'] = $_SESSION['validation_error'];
+            unset($_SESSION['validation_error']);
+        }
+
         $data['purl'] = $purl;
         $data['id'] = $results['id'];
         
@@ -352,6 +359,92 @@ class Main extends BaseController
     // =======================================================
     public function define_password_submit()
     {
-        die('OK!');
+        // Se houver uma sessão aberta, saia!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // verificar se houve uma postagem
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            $this->index();
+            return;
+        }
+
+        // Validação de formulário - verificar campos ocultos
+        if(empty($_POST['purl']) || empty($_POST['id']) || strlen($_POST['purl']) != 20){
+            $this->index();
+            return;
+        }
+
+        // obter campos ocultos
+        $id = aes_decrypt($_POST['id']);
+        $purl = $_POST['purl'];
+        
+        // verificar se o ID é válido
+        if(!$id){
+            $this->index();
+            return;
+        }
+
+        // Validação de formulário - verificar a estrutura da senha
+        if(empty($_POST['text_password'])){
+            $_SESSION['validation_error'] = "Password é de preenchimento obrigatório.";
+            $this->define_password($purl);
+            return;
+        }
+        if(empty($_POST['text_repeat_password'])){
+            $_SESSION['validation_error'] = "Repetir a password é de preenchimento obrigatório.";
+            $this->define_password($purl);
+            return;
+        }
+
+        // obter os valores de entrada
+        $password = $_POST['text_password'];
+        $repeat_password = $_POST['text_repeat_password'];
+
+        if(strlen($password) < 6 || strlen($password) > 12){
+            $_SESSION['validation_error'] = "A password deve ter entre 6 e 12 caracteres.";
+            $this->define_password($purl);
+            return;
+        }
+        if(strlen($repeat_password < 6 || strlen($repeat_password) > 12)){
+            $_SESSION['validation_error'] = "A repetição da password deve ter entre 6 e 12 caracteres.";
+            $this->define_password($purl);
+            return;
+        }
+
+        // Verifique se todas as senhas têm, pelo menos, uma letra maiúscula, uma letra minúscula e um dígito.
+
+        // Use uma perspectiva positiva para o futuro.
+        if(!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/", $password)){
+            $_SESSION['validation_error'] = "A password deve ter, pelo menos, uma maiúscula, uma minúscula e um dígito.";
+            $this->define_password($purl);
+            return;
+        }
+        if(!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/", $repeat_password)){
+            $_SESSION['validation_error'] = "A repetição da password deve ter, pelo menos, uma maiúscula, uma minúscula e um dígito.";
+            $this->define_password($purl);
+            return;
+        }
+
+        // Verifique se a senha e a senha repetida têm valores iguais.
+        if($password != $repeat_password){
+            $_SESSION['validation_error'] = "A nova password e a sua repetição não são iguais.";
+            $this->define_password($purl);
+            return;
+        }
+
+        // Atualiza o banco de dados com a senha do agente.
+        $model = new Agents();
+        $model->set_agent_password($id, $password);
+
+        // logger
+        logger("Foi definida com sucesso a password para o agente ID = $id (purl: $purl)");
+
+        // Exibir a visualização com a página de sucesso.
+        $this->view('layouts/html_header');
+        $this->view('reset_password_define_password_success');
+        $this->view('layouts/html_footer');        
     }
 }

@@ -11,7 +11,7 @@
                 <div class="row justify-content-center">
                     <div class="col-8">
 
-                        <form action="?ct=main&mt=define_password_submit" method="post">
+                        <form action="?ct=main&mt=define_password_submit" method="post" novalidate>
 
                             <input type="hidden" name="purl" value="<?= $purl ?>">
                             <input type="hidden" name="id" value="<?= aes_encrypt($id) ?>">
@@ -28,9 +28,15 @@
                                 <input type="password" name="text_repeat_password" id="text_repeat_password" class="form-control" required>
                             </div>
 
-                            <div class="alert alert-danger p-2 text-center">
-                                [mensagem de erro]
+                            <div class="mb-3 text-center">
+                                <button type="submit" class="btn btn-secondary px-3"><i class="fa-solid fa-check me-2"></i>Definir password</button>
                             </div>
+
+                            <?php if(!empty($validation_error)): ?>
+                            <div class="alert alert-danger p-2 text-center">
+                                <?= $validation_error ?>
+                            </div>
+                            <?php endif; ?>
 
                         </form>
 

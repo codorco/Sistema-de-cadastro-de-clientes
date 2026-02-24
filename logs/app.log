@@ -106,3 +106,4 @@
 [2026-02-24T21:28:11.886910+00:00] app_logs.INFO: admin@bng.com - enviado com sucesso email para conclusão do registo: agente11@bng.com [] []
 [2026-02-24T21:30:28.287541+00:00] app_logs.INFO: admin@bng.com - enviado com sucesso email para conclusão do registo: agente12@bng.com [] []
 [2026-02-24T22:13:53.577748+00:00] app_logs.INFO: admin@bng.com - Fez logout [] []
+[2026-02-24T22:29:38.928726+00:00] app_logs.INFO: Foi definida com sucesso a password para o agente ID = 12 (purl: CgDhcIfBbCadEBcIeEDj) [] []
