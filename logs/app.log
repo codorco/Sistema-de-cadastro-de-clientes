@@ -81,3 +81,8 @@
 [2026-02-23T23:47:12.126098+00:00] app_logs.INFO: agente1@bng.com - carregamento de ficheiro efetuado: dados_clientes_1.csv [] []
 [2026-02-23T23:47:12.126352+00:00] app_logs.INFO: agente1@bng.com - report: {"total":4,"total_carregados":4,"total_nao_carregados":0} [] []
 [2026-02-24T00:03:25.392716+00:00] app_logs.INFO: agente1@bng.com - fez download da lista de clientes para o ficheiro: output_1771891405.xlsx | total: 8 registos. [] []
+[2026-02-24T00:26:52.816366+00:00] app_logs.INFO: agente1@bng.com - password alterada com sucesso no perfil de utilizador. [] []
+[2026-02-24T00:27:06.889787+00:00] app_logs.INFO: agente1@bng.com - Fez logout [] []
+[2026-02-24T00:27:12.070259+00:00] app_logs.ERROR: agente1@bng.com - login invalido [] []
+[2026-02-24T00:27:19.510497+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
+[2026-02-24T00:27:33.272640+00:00] app_logs.INFO: agente1@bng.com - password alterada com sucesso no perfil de utilizador. [] []
