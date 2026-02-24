@@ -318,4 +318,40 @@ class Main extends BaseController
         $this->view('footer');
         $this->view('layouts/html_footer');
     }
+    // =======================================================
+    public function define_password($purl = '')
+    {
+        // Se houver uma sessão aberta, saia!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+        
+        // verifica se o purl é válido
+        if(empty($purl) || strlen($purl) != 20){
+            die('Erro nas credenciais de acesso.');
+        }
+        
+        // Verifica se há um novo agente com este purl
+        $model = new Agents();
+        $results = $model->check_new_agent_purl($purl);
+        
+        if(!$results['status']){
+            die('Erro nas credenciais de acesso.');
+        }
+
+        $data['purl'] = $purl;
+        $data['id'] = $results['id'];
+        
+        // Exibe a visualização de definição de senha
+        $this->view('layouts/html_header');
+        $this->view('new_agent_define_password', $data);
+        $this->view('layouts/html_footer');
+    }
+
+    // =======================================================
+    public function define_password_submit()
+    {
+        die('OK!');
+    }
 }

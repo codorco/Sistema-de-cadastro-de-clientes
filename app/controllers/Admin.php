@@ -5,6 +5,7 @@ namespace scc\Controllers;
 use scc\Controllers\BaseController;
 use scc\Models\AdminModel;
 use PhpOffice\PhpSpreadsheet\Writer\Pdf\Mpdf;
+use scc\System\SendEmail;
 
 class Admin extends BaseController
 {
@@ -319,8 +320,41 @@ class Admin extends BaseController
         // Adicionar novo agente ao banco de dados
         $results = $model->add_new_agent($_POST);
 
-        printData($results);
+      if($results['status'] == 'error'){
+            
+            // logger
+            logger(get_active_user_name() . " - aconteceu um erro na criação de novo registo de agente.");
+            header('Location: index.php');
+        }
 
-        // vamos enviar um email para o novo agente para que possa definir a sua password.
+        // Enviar e-mail com purl
+        $url = explode('?', $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI']);
+        $url = $url[0] . '?ct=main&mt=define_password&purl=' . $results['purl'];
+        $email = new SendEmail();
+        $data = [
+            'to' => $_POST['text_name'],
+            'link' => $url
+        ];
+
+        $results = $email->send_email(APP_NAME . ' Conclusão do registo de agente', 'email_body_new_agent',$data);
+        if($results['status'] == 'error'){
+            
+            // logger
+            logger(get_active_user_name() . " - não foi possível enviar o email para conclusão do registo: " . $_POST['text_name'] . ' - erro: ' . $results['message'], 'error');
+            die($results['message']);
+        }
+
+        // logger
+        logger(get_active_user_name() . " - enviado com sucesso email para conclusão do registo: " . $_POST['text_name']);
+
+        // Exibe a página de sucesso
+        $data['user'] = $_SESSION['user'];
+        $data['email'] = $_POST['text_name'];
+
+        $this->view('layouts/html_header', $data);
+        $this->view('navbar', $data);
+        $this->view('agents_email_sent', $data);
+        $this->view('footer');
+        $this->view('layouts/html_footer');
     }
 }
