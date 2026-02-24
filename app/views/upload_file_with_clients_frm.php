@@ -8,11 +8,11 @@
 
                         <h4 class="mb-4"><strong>Carregar ficheiro de clientes</strong></h4>
 
-                        <p class="text-center">Carregar ficheiro em formato XLSX ou CSV. Se não tem o template do ficheiro, faça download <a href="#">AQUI</a></p>
+                        <p class="text-center">Carregar ficheiro em formato XLSX ou CSV. Se não tem o template do ficheiro, faça download <a href="assets/file_template/template.xlsx">AQUI</a></p>
 
                         <hr>
 
-                        <form action="?ct=agent&mt=upload_file_submit" method="post" enctype="multipart/form-data" novalidate>
+                        <form action="?ct=agent&mt=upload_file_submit" method="post" enctype="multipart/form-data">
 
                             <div class="mb-4">
                                 <label for="clients_file" class="form-label">Ficheiro de clientes</label>
@@ -28,6 +28,15 @@
                                 <div class="alert alert-danger p-2 text-center">
                                     <?= $server_error ?>
                                 </div>
+                            <?php endif; ?>
+
+                            <?php if (isset($report)) : ?>
+                                <ul class="alert alert-success ps-5">
+                                    <li><?= 'Ficheiro: ' .$report['filename'] ?></li>
+                                    <li><?= 'Total: ' .$report['total'] ?></li>
+                                    <li><?= 'Carregados: ' .$report['total_carregados'] ?></li>
+                                    <li><?= 'Não carregados: ' .$report['total_nao_carregados'] ?></li>
+                                </ul>
                             <?php endif; ?>
 
                         </form>

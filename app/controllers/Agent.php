@@ -343,7 +343,7 @@ class Agent extends BaseController
         $model->delete_client($id_client);
 
         // logger
-        logger(get_current_user() . ' - Eliminado o cliente id: ' . $id_client);
+        logger(get_active_user_name() . ' - Eliminado o cliente id: ' . $id_client);
 
         // Retorna à página principal do agente.
         $this->my_clients();
@@ -364,6 +364,12 @@ class Agent extends BaseController
             $data['server_error'] = $_SESSION['server_error'];
             unset($_SESSION['server_error']);
         }
+        // Verifique se há algum relatório na sessão.
+        if(!empty($_SESSION['report'])){
+            $data['report'] = $_SESSION['report'];
+            unset($_SESSION['report']);
+        }
+
 
         $this->view('layouts/html_header');
         $this->view('navbar', $data);
@@ -395,6 +401,10 @@ class Agent extends BaseController
         $tmp = explode('.', $_FILES['clients_file']['name']);
         $extension = end($tmp);
         if (!in_array($extension, $valid_extensions)) {
+
+           // logger
+            logger(get_active_user_name() . " - tentou carregar um ficheiro inválido: " . $_FILES['clients_file']['name'], "error");
+
             $_SESSION['server_error'] = "O ficheiro deve ser do tipo XLSX ou CSV.";
             $this->upload_file_frm();
             return;
@@ -402,6 +412,11 @@ class Agent extends BaseController
 
         // Verifica o tamanho do arquivo: máximo = 2 MB
         if ($_FILES['clients_file']['size'] > 2000000) {
+
+            // logger
+            logger(get_active_user_name() . " - tentou carregar um ficheiro inválido: " . $_FILES['clients_file']['name'] . " tamanho máximo excedido.", "error");
+
+
             $_SESSION['server_error'] = "O ficheiro deve ter, no máximo, 2 MB.";
             $this->upload_file_frm();
             return;
@@ -421,11 +436,20 @@ class Agent extends BaseController
             } else {
 
                 // O cabeçalho não está correto..
+
+             // logger
+                logger(get_active_user_name() . " - tentou carregar um ficheiro com header incorreto: " . $_FILES['clients_file']['name'], "error");
+
+
                 $_SESSION['server_error'] = "O ficheiro não tem o header no formato correto.";
                 $this->upload_file_frm();
                 return;
             }
         } else {
+            // logger
+            logger(get_active_user_name() . " - aconteceu um erro inesperado no carregamento do ficheiro: " . $_FILES['clients_file']['name'], "error");
+
+
             $_SESSION['server_error'] = "Aconteceu um erro inesperado no carregamento do ficheiro.";
             $this->upload_file_frm();
             return;
@@ -489,11 +513,23 @@ class Agent extends BaseController
         // inserir dados no banco de dados
         $model = new Agents();
 
+        $report = [
+            'total' => 0,
+            'total_carregados' => 0,
+            'total_nao_carregados' => 0
+        ];
+
         // Extraia o cabeçalho de $data
         array_shift($data);
 
         // cria um círculo para inserir cada registro
         foreach($data as $client){
+
+            // Verifica se a linha contém dados ou não.
+            if(empty($client[0])) continue;
+
+            // report
+            $report['total']++;
 
             // verificar se o cliente já existe no banco de dados
             $exists = $model->check_if_client_exists(['text_name' => $client[0]]);
@@ -510,11 +546,66 @@ class Agent extends BaseController
                 ];
 
                 $model->add_new_client_to_database($post_data);
+
+                // report
+                $report['total_carregados']++;
                 
             } else {
                 
                 // O cliente já existe.
+                $report['total_nao_carregados']++;
             }
         }
+         // logger
+        logger(get_active_user_name() . " - carregamento de ficheiro efetuado: " . $_FILES['clients_file']['name']);
+        logger(get_active_user_name() . " - report: " . json_encode($report));
+
+        // Defina o relatório a ser exibido no formulário de upload.
+        $report['filename'] = $_FILES['clients_file']['name'];
+        $_SESSION['report'] = $report;
+
+        // Exibir o formulário de upload novamente.
+        $this->upload_file_frm();
+    }
+
+    // =======================================================
+    public function export_clients_xlsx()
+    {
+        if (!check_session() || $_SESSION['user']->profile != 'agent') {
+            header('Location: index.php');
+        }
+
+        // obtem todos os clientes de agentes
+        $model = new Agents();
+        $results = $model->get_agent_clients($_SESSION['user']->id);
+        
+        // Adicionar cabeçalho à coleção
+        $data[] = ['name', 'gender', 'birthdate', 'email', 'phone', 'interests', 'created_at', 'updated_at'];
+
+        // Coloque todos os clientes na coleção de dados $data
+        foreach($results['data'] as $client){
+            
+            // remover a primeira propriedade (id)
+            unset($client->id);
+
+            // Adicionar dados como array (o $client original é um objeto stdClass)
+            $data[] = (array)$client;
+        }
+
+        // Armazene os dados no arquivo XLSX.
+        $filename = 'output_' . time() . '.xlsx';
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0);
+        $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'dados');
+        $spreadsheet->addSheet($worksheet);
+        $worksheet->fromArray($data);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="'. urlencode($filename).'"');
+        $writer->save('php://output');
+
+        // logger
+        logger(get_active_user_name() . " - fez download da lista de clientes para o ficheiro: " . $filename . " | total: " . count($data) - 1 . " registos.");
     }
 }

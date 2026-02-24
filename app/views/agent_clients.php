@@ -59,7 +59,7 @@
                         <p class="mb-5">Total: <strong><?= count($clients) ?></strong></p>
                     </div>
                     <div class="col text-end">
-                        <a href="#" class="btn btn-secondary">
+                        <a href="?ct=agent&mt=export_clients_xlsx" class="btn btn-secondary">
                             <i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX
                         </a>
                     </div>
