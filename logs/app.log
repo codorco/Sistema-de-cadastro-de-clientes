@@ -86,3 +86,5 @@
 [2026-02-24T00:27:12.070259+00:00] app_logs.ERROR: agente1@bng.com - login invalido [] []
 [2026-02-24T00:27:19.510497+00:00] app_logs.INFO: agente1@bng.com - Login com sucesso [] []
 [2026-02-24T00:27:33.272640+00:00] app_logs.INFO: agente1@bng.com - password alterada com sucesso no perfil de utilizador. [] []
+[2026-02-24T00:32:58.012452+00:00] app_logs.INFO: agente1@bng.com - Fez logout [] []
+[2026-02-24T00:33:02.541207+00:00] app_logs.INFO: admin@bng.com - Login com sucesso [] []

@@ -35,7 +35,7 @@
 
             <!-- clientes -->
             <?php if ($user->profile == 'admin') : ?>
-                <a href="#" class="unlink m-2">
+                <a href="?ct=admin&mt=all_clients" class="unlink m-2">
                     <div class="home-option p-5 text-center">
                         <h3 class="mb-3"><i class="fa-solid fa-users"></i></h3>
                         <h5>Clientes</h5>
