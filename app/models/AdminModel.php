@@ -130,4 +130,67 @@ class AdminModel extends BaseModel
 
         return $results;
     }
+// =======================================================
+    public function check_if_user_exists_with_same_name($name)
+    {
+        // Verifique se existe um usuário com o nome $name.
+        $params = [
+            ':name' => $name
+        ];
+
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT id FROM agents " . 
+            "WHERE AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "') = name"
+        , $params);
+
+        if($results->affected_rows == 0){
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // =======================================================
+    public function add_new_agent($data)
+    {
+        // Adiciona novo agente ao banco de dados
+
+        // generate purl
+        $chars = 'abcdefghijkabcdefghijkabcdefghijkABCDEFGHIJKABCDEFGHIJKABCDEFGHIJK';
+        $purl = substr(str_shuffle($chars), 0, 20);
+
+        $params = [
+            ':name' => $data['text_name'],
+            ':profile' => $data['select_profile'],
+            ':purl' => $purl
+        ];
+
+        $this->db_connect();
+        $results = $this->non_query(
+            "INSERT INTO agents VALUES(" . 
+            "0, " . 
+            "AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "'), " . 
+            "NULL, " . 
+            ":profile, " . 
+            ":purl, " . 
+            "NULL, " . 
+            "NULL, " . 
+            "NOW(), " . 
+            "NULL, " . 
+            "NULL)"
+        , $params);
+        
+        if($results->affected_rows == 0){
+            return [
+                'status' => 'error'
+            ];
+        } else {
+            return [
+                'status' => 'success',
+                'email' => $data['text_name'],
+                'purl' => $purl
+            ];
+        }
+    }
 }

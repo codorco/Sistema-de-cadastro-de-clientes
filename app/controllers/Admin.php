@@ -241,4 +241,86 @@ class Admin extends BaseController
         $this->view('footer');
         $this->view('layouts/html_footer');
     }
+
+   // =======================================================
+    public function new_agent_frm()
+    {
+        // Verifica se a sessão possui um usuário com perfil de administrador.
+        if (!check_session() || $_SESSION['user']->profile != 'admin') {
+            header('Location: index.php');
+        }
+
+        $data['user'] = $_SESSION['user'];
+
+        // verifica erros de validação
+        if(isset($_SESSION['validation_error'])){
+            $data['validation_error'] = $_SESSION['validation_error'];
+            unset($_SESSION['validation_error']);
+        }
+
+        // verifica erros do servidor
+        if(isset($_SESSION['server_error'])){
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        $this->view('layouts/html_header', $data);
+        $this->view('navbar', $data);
+        $this->view('agents_add_new_frm', $data);
+        $this->view('footer');
+        $this->view('layouts/html_footer');
+    }
+
+    // =======================================================
+    public function new_agent_submit()
+    {
+        // Verifica se a sessão possui um usuário com perfil de administrador.
+        if (!check_session() || $_SESSION['user']->profile != 'admin') {
+            header('Location: index.php');
+        }
+
+        // verificar se houve uma postagem
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            header('Location: index.php');
+        }
+
+        // validação de formulário
+        $validation_error = null;
+
+        // Verifica se o e-mail do agente é válido.
+        if(empty($_POST['text_name']) || !filter_var($_POST['text_name'], FILTER_VALIDATE_EMAIL)){
+            $validation_error = "O nome do agente deve ser um email válido.";
+        }
+        
+        // Verifica se o perfil é válido.
+        $valid_profiles = ['admin', 'agent'];
+        if(empty($_POST['select_profile']) || !in_array($_POST['select_profile'], $valid_profiles)){
+            $validation_error = "O perfil selecionado é inválido.";
+        }
+
+        if(!empty($validation_error)){
+            $_SESSION['validation_error'] = $validation_error;
+            $this->new_agent_frm();
+            return;
+        }
+
+        // Verifica se já existe um agente com o mesmo nome de usuário.
+        $model = new AdminModel();
+        $results = $model->check_if_user_exists_with_same_name($_POST['text_name']);
+
+        if($results){
+            
+            // Existe um agente com esse nome (e-mail).
+            $_SESSION['server_error'] = "Já existe um agente com o mesmo nome.";
+            $this->new_agent_frm();
+            return;
+        }
+
+        // Adicionar novo agente ao banco de dados
+        $results = $model->add_new_agent($_POST);
+
+        printData($results);
+
+        // vamos enviar um email para o novo agente para que possa definir a sua password.
+    }
 }
