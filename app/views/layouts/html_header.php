@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -19,16 +20,22 @@
 
     <!-- jquery -->
     <script src="assets/jquery/jquery-3.6.0.min.js"></script>
-    
+
     <!-- datatables -->
     <link rel="stylesheet" href="assets/datatables/datatables.min.css">
     <script src="assets/datatables/datatables.min.js"></script>
 
-    <?php if(isset($flatpickr)):?>
-    <!-- flatpickr -->
-    <link rel="stylesheet" href="assets/flatpickr/flatpickr.min.css">
-    <script src="assets/flatpickr/flatpickr.js"></script>
-    <?php endif;?>
+    <?php if (isset($flatpickr)) : ?>
+        <!-- flatpickr -->
+        <link rel="stylesheet" href="assets/flatpickr/flatpickr.min.css">
+        <script src="assets/flatpickr/flatpickr.js"></script>
+    <?php endif; ?>
+
+    <?php if (isset($chartjs)) : ?>
+        <!-- chartjs -->
+        <script src="assets/chartjs/chart.min.js"></script>
+    <?php endif; ?>
 
 </head>
+
 <body>
