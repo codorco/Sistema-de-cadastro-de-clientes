@@ -216,4 +216,42 @@ class AdminModel extends BaseModel
         , $params);
         return $results;
     }
+
+    // =======================================================
+    public function check_if_another_user_exists_with_same_name($id, $name)
+    {
+        // Verifica se há outro agente com o mesmo nome (e-mail).
+        $params = [
+            ':id' => $id,
+            ':name' => $name
+        ];
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT id FROM agents " . 
+            "WHERE AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "') = name " . 
+            "AND id <> :id"
+        , $params);
+
+        return $results->affected_rows != 0 ? true : false;
+    }
+
+    // =======================================================
+    public function edit_agent($id, $data)
+    {
+        // Atualiza as informações do agente.
+        $params = [
+            ':id' => $id,
+            ':name' => $data['text_name'],
+            ':profile' => $data['select_profile']
+        ];
+        $this->db_connect();
+        $results = $this->non_query(
+            "UPDATE agents SET " . 
+            "name = AES_ENCRYPT(:name, '" . MYSQL_AES_KEY . "'), " . 
+            "profile = :profile, " . 
+            "updated_at = NOW() " . 
+            "WHERE id = :id"
+        , $params);
+        return $results;
+    }
 }

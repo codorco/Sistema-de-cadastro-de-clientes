@@ -10,7 +10,7 @@
 
                         <hr>
 
-                        <form action="?ct=admin&mt=edit_agent_submit" method="post">
+                        <form action="?ct=admin&mt=edit_agent_submit" method="post" novalidate>
 
                             <input type="hidden" name="id" value="<?= aes_encrypt($agent->id) ?>">
 
@@ -32,9 +32,17 @@
                                 <button type="submit" class="btn btn-secondary px-4"><i class="fa-solid fa-pen-to-square me-2"></i>Atualizar</button>
                             </div>
 
-                            <div class="alert alert-danger p-2 text-center">
-                                [mensagem de erro]
-                            </div>
+                            <?php if(!empty($validation_error)): ?>
+                                <div class="alert alert-danger p-2 text-center">
+                                    <?= $validation_error ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if(!empty($server_error)): ?>
+                                <div class="alert alert-danger p-2 text-center">
+                                    <?= $server_error ?>
+                                </div>
+                            <?php endif; ?>
 
                         </form>
                     </div>
