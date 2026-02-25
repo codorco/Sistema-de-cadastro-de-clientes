@@ -602,4 +602,46 @@ class Admin extends BaseController
         // Ir para a página de gerenciamento de agentes.
         $this->agents_management();
     }
+   // =======================================================
+    public function export_agents_XLSX()
+    {
+        // Verifica se a sessão possui um usuário com perfil de administrador.
+        if (!check_session() || $_SESSION['user']->profile != 'admin') {
+            header('Location: index.php');
+        }
+
+        // obter dados dos agentes
+        $model = new AdminModel();
+        $results = $model->get_agents_data_and_total_clients();
+        $results = $results->results;
+
+        // Adiciona cabeçalho à coleção
+        $data[] = ['name', 'profile', 'active', 'last login', 'created at', 'updated at', 'deleted at', 'total active clients', 'total deleted clients'];
+
+        // Coloca todos os agentes na coleção de dados $data
+        foreach ($results as $agent) {
+
+            // remover a primeira propriedade (id)
+            unset($agent->id);
+
+            // Adiciona dados como array (o $client original é um objeto stdClass)
+            $data[] = (array)$agent;
+        }
+
+        // Armazena os dados no arquivo XLSX.
+        $filename = 'output_' . time() . '.xlsx';
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $spreadsheet->removeSheetByIndex(0);
+        $worksheet = new \PhpOffice\PhpSpreadsheet\Worksheet\Worksheet($spreadsheet, 'dados');
+        $spreadsheet->addSheet($worksheet);
+        $worksheet->fromArray($data);
+
+        $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . urlencode($filename) . '"');
+        $writer->save('php://output');
+
+        // logger
+        logger(get_active_user_name() . " - fez download da lista de agentes para o ficheiro: " . $filename . " | total: " . count($data) - 1 . " registos.");
+    }
 }

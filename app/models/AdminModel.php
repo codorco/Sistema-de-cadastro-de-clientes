@@ -309,4 +309,39 @@ class AdminModel extends BaseModel
         , $params);
         return $results;
     }
+
+    // =======================================================
+    public function get_agents_data_and_total_clients()
+    {
+        // Retorna informações completas sobre os agentes.
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT " .
+            "AES_DECRYPT(`name`, 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD') `name`, " .
+            "`profile`, " .
+            "CASE " .
+            "WHEN passwrd IS NOT NULL THEN 'active' " . 
+            "WHEN passwrd IS NULL THEN 'not active' " .
+            "END `active`, " .
+            "last_login, " .
+            "created_at, " .
+            "updated_at, " .
+            "deleted_at, " .
+            "a.total_active_clients, " .
+            "b.total_deleted_clients " .
+            "FROM agents LEFT JOIN  " .
+            "( " .
+            "SELECT id_agent, COUNT(*) total_active_clients FROM persons WHERE deleted_at IS NULL " .
+            "GROUP BY id_agent " .
+            ") a " .
+            "ON id = a.id_agent " .
+            "LEFT JOIN " .
+            "( " .
+            "SELECT id_agent, COUNT(*) total_deleted_clients FROM persons WHERE deleted_at IS NOT NULL " .
+            "GROUP BY id_agent " .
+            ") b " .
+            "ON id = b.id_agent"
+        );
+        return $results;
+    }
 }

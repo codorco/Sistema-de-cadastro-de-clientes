@@ -84,7 +84,7 @@
 
                 <div class="row mt-3">
                     <div class="col text-end">
-                        <a href="#" class="btn btn-secondary px-4"><i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX</a>
+                        <a href="?ct=admin&mt=export_agents_xlsx" class="btn btn-secondary px-4"><i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX</a>
                         <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
                     </div>
                 </div>
