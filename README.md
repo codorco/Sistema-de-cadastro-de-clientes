@@ -13,8 +13,6 @@ Projeto focado em autenticação segura, criptografia de dados sensíveis, contr
 
 # 📷 Screenshots
 
-> Crie uma pasta: `docs/images/` e adicione as imagens abaixo.
-
 ## 🔐 Tela de Login
 ![Login](docs/images/login.jpg)
 
@@ -192,6 +190,7 @@ http://localhost
 
 # 📊 Funcionalidades Principais
 
+- Adicionar e gerenciar clientes / agentes
 - Autenticação com recuperação de senha via email
 - Sistema de link único (PURL) para criação de senha
 - Dashboard estatístico
