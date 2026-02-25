@@ -10,7 +10,7 @@
 
                 <div class="row justify-content-center">
                     <div class="col-8">
-                        <form action="?ct=main&mt=login_submit" method="post" novalidate>
+                        <form action="?ct=main&mt=login_submit" method="post">
                             <div class="mb-3">
                                 <label for="text_username" class="form-label">Utilizador</label>
                                 <input type="email" name="text_username" id="text_username" value="" class="form-control" required>
@@ -24,7 +24,7 @@
                             </div>
 
                             <div class="mb-3 text-center">
-                                <a href="#">Esqueci-me da password!</a>
+                                <a href="?ct=main&mt=reset_password">Esqueci-me da password!</a>
                             </div>
 
                             <?php if(!empty($validation_errors)): ?>

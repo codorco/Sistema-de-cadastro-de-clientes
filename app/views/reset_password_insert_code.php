@@ -13,7 +13,7 @@
 
                         <p class="text-center">Introduza o código que lhe enviámos por email.</p>
 
-                        <form action="#" method="post">
+                        <form action="?ct=main&mt=insert_code_submit&id=<?= aes_encrypt($id) ?>" method="post" novalidate>
 
                             <div class="row justify-content-center mb-4">
                                 <div class="col-8">
@@ -23,15 +23,23 @@
                             </div>
 
                             <div class="mb-4 text-center">
-                                <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
+                                <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
                                 <button type="submit" class="btn btn-secondary px-4">Avançar<i class="fa-solid fa-chevron-right ms-2"></i></button>
                             </div>
 
                         </form>
 
-                        <div class="alert alert-danger p-2 text-center">
-                            [mensagem de erro]
-                        </div>
+                        <?php if(!empty($validation_error)): ?>
+                            <div class="alert alert-danger p-2 text-center">
+                                <?= $validation_error ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <?php if(!empty($server_error)): ?>
+                            <div class="alert alert-danger p-2 text-center">
+                                <?= $server_error ?>
+                            </div>
+                        <?php endif; ?>
 
                     </div>
                 </div>

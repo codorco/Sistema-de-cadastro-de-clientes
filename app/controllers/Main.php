@@ -4,6 +4,7 @@ namespace scc\Controllers;
 
 use scc\Controllers\BaseController;
 use scc\Models\Agents;
+use scc\System\SendEmail;
 
 class Main extends BaseController
 {
@@ -446,5 +447,327 @@ class Main extends BaseController
         $this->view('layouts/html_header');
         $this->view('reset_password_define_password_success');
         $this->view('layouts/html_footer');        
+    }
+// =======================================================
+    public function reset_password()
+    {
+        // Se houver uma sessão aberta, saia!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        $data = [];
+
+        // Verifica erros de validação.
+        if(isset($_SESSION['validation_error'])){
+            $data['validation_error'] = $_SESSION['validation_error'];
+            unset($_SESSION['validation_error']);
+        }
+        
+        // Verifica erros do servidor.
+        if(isset($_SESSION['server_error'])){
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        // Exibe a visualização do formulário de recuperação de senha.
+        $this->view('layouts/html_header');
+        $this->view('reset_password_frm', $data);
+        $this->view('layouts/html_footer'); 
+    }
+
+    // =======================================================
+    public function reset_password_submit()
+    {
+        // Se houver uma sessão aberta, saia!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // Verifica se houve uma postagem.
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            $this->index();
+            return;
+        }
+
+        // Validação de formulário.
+        if(empty($_POST['text_username'])){
+            $_SESSION['validation_error'] = "Utilizador é de preenchimento obrigatório.";
+            $this->reset_password();
+            return;
+        }
+        if(!filter_var($_POST['text_username'], FILTER_VALIDATE_EMAIL)){
+            $_SESSION['validation_error'] = "Utilizador tem que ser um email válido.";
+            $this->reset_password();
+            return;
+        }
+
+        $username = $_POST['text_username'];
+
+        // Define um código para recuperar a senha, envia um email e exibe a página do código.
+        $model = new Agents();
+        $results = $model->set_code_for_recover_password($username);
+
+        if($results['status'] == 'error'){
+
+            // logger
+            logger("Aconteceu um erro na criação do código de recuperação da password. User: $username", 'error');
+
+            $_SESSION['validation_error'] = "Aconteceu um erro inesperado. Por favor tente novamente.";
+            $this->reset_password();
+            return;
+        }
+
+        $id = $results['id'];
+        $code = $results['code'];
+
+        // O código está armazenado. Enviar email com o código.
+        $email = new SendEmail();
+        $results = $email->send_email(APP_NAME . ' Código para recuperar a password', 'codigo_recuperar_password', ['to' => $username, 'code' => $results['code']]);
+
+        if($results['status'] == 'error')
+        {
+            // logger
+            logger("Aconteceu um erro no envio do email com o código de recuperação da password. User: $username", 'error');
+
+            $_SESSION['validation_error'] = "Aconteceu um erro inesperado. Por favor tente novamente.";
+            $this->reset_password();
+            return;
+        }
+
+        // logger
+        logger("Email com código de recuperação de password enviado com sucesso. User: $username | Code: $code");
+
+        // O email foi enviado. Exibe a próxima visualização.
+        $this->insert_code(aes_encrypt($id));
+    }
+
+   // =======================================================
+    public function insert_code($id = '')
+    {
+        // if there is a open session, gets out!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // check if id is valid
+        if(empty($id)){
+            $this->index();
+            return;
+        }
+
+        $id = aes_decrypt($id);
+        if(!$id){
+            $this->index();
+            return;
+        }
+
+        $data['id'] = $id;
+
+        // check for validation errors or server errors
+        if(isset($_SESSION['validation_error'])){
+            $data['validation_error'] = $_SESSION['validation_error'];
+            unset($_SESSION['validation_error']);
+        }
+
+        if(isset($_SESSION['server_error'])){
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        // display the view
+        $this->view('layouts/html_header');
+        $this->view('reset_password_insert_code', $data);
+        $this->view('layouts/html_footer');
+    }
+
+    // =======================================================
+    public function insert_code_submit($id = '')
+    {
+        // if there is a open session, gets out!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // check if id is valid
+        if(empty($id)){
+            $this->index();
+            return;
+        }
+
+        $id = aes_decrypt($id);
+        if(!$id){
+            $this->index();
+            return;
+        }
+
+        // check if his a post
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            $this->index();
+            return;
+        }
+
+        // form validation
+        if(empty($_POST['text_code'])){
+            $_SESSION['validation_error'] = "Código é de preenchimento obrigatório.";
+            $this->insert_code(aes_encrypt($id));
+            return;
+        }
+        
+        $code = $_POST['text_code'];
+        
+        if(!preg_match("/^\d{6}$/", $code)){
+            $_SESSION['validation_error'] = "O código é constituído por 6 números.";
+            $this->insert_code(aes_encrypt($id));
+            return;
+        }
+
+        // check if the code is the same that is stored in the database
+        $model = new Agents();
+        $results = $model->check_if_reset_code_is_correct($id, $code);
+        
+        if(!$results['status']){
+
+            $_SESSION['server_error'] = "Código incorreto.";
+            $this->insert_code(aes_encrypt($id));
+            return;
+
+        }
+
+        // the code is correct. Let's define the password
+        $this->reset_define_password(aes_encrypt($id));
+    }
+        // =======================================================
+    public function reset_define_password($id = '')
+    {
+        // if there is a open session, gets out!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // check if id is valid
+        if(empty($id)){
+            $this->index();
+            return;
+        }
+
+        $id = aes_decrypt($id);
+        if(!$id){
+            $this->index();
+            return;
+        }
+
+        $data['id'] = $id;
+
+        // check for validation error
+        if(isset($_SESSION['validation_error'])){
+            $data['validation_error'] = $_SESSION['validation_error'];
+            unset($_SESSION['validation_error']);
+        }
+
+        // check for server error
+        if(isset($_SESSION['server_error'])){
+            $data['server_error'] = $_SESSION['server_error'];
+            unset($_SESSION['server_error']);
+        }
+
+        // display the form to define de new password
+        $this->view('layouts/html_header');
+        $this->view('reset_password_define_password_frm', $data);
+        $this->view('layouts/html_footer');
+    }
+
+    // =======================================================
+    public function reset_define_password_submit($id = '')
+    {
+        // if there is a open session, gets out!
+        if(check_session()){
+            $this->index();
+            return;
+        }
+
+        // check if id is valid
+        if(empty($id)){
+            $this->index();
+            return;
+        }
+
+        $id = aes_decrypt($id);
+        if(!$id){
+            $this->index();
+            return;
+        }
+
+        // check if there was a post
+        if($_SERVER['REQUEST_METHOD'] != 'POST'){
+            $this->index();
+            return;
+        }
+
+        // form validation
+        if(empty($_POST['text_new_password'])){
+            $_SESSION['validation_error'] = "Nova password é de preenchimento obrigatório.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+        if(empty($_POST['text_repeat_new_password'])){
+            $_SESSION['validation_error'] = "A repetição da nova password é de preenchimento obrigatório.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+
+        // get the input values
+        $new_password = $_POST['text_new_password'];
+        $repeat_new_password = $_POST['text_repeat_new_password'];
+        
+        // check if all passwords have more than 6 and less than 12 characters
+        if(strlen($new_password) < 6 || strlen($new_password) > 12){
+            $_SESSION['validation_error'] = "A nova password deve ter entre 6 e 12 caracteres.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+        if(strlen($repeat_new_password) < 6 || strlen($repeat_new_password) > 12){
+            $_SESSION['validation_error'] = "A repeição da nova password deve ter entre 6 e 12 caracteres.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+
+        // check if all password have, at least one upper, one lower and one digit
+        
+        // use positive look ahead
+        if(!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/", $new_password)){
+            $_SESSION['validation_error'] = "A nova password deve ter, pelo menos, uma maiúscula, uma minúscula e um dígito.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+        if(!preg_match("/(?=.*\d)(?=.*[a-z])(?=.*[A-Z])/", $repeat_new_password)){
+            $_SESSION['validation_error'] = "A repetição da nova password deve ter, pelo menos, uma maiúscula, uma minúscula e um dígito.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+        
+        // check if both passwords are equal
+        if($new_password != $repeat_new_password){
+            $_SESSION['validation_error'] = "As nova password e a sua repetição devem ser iguais.";
+            $this->reset_define_password(aes_encrypt($id));
+            return;
+        }
+
+        // updates the agent's password in the database
+        $model = new Agents();
+        $model->change_agent_password($id, $new_password);
+
+        // logger
+        logger("Foi alterada com sucesso a password do user ID: $id após pedido de reset da password.");
+
+        // display success page
+        $this->view('layouts/html_header');
+        $this->view('profile_change_password_success');
+        $this->view('layouts/html_footer');
     }
 }

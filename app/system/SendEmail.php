@@ -62,4 +62,12 @@ class SendEmail
         $html .= '<a href="'.$data['link'].'">Concluir registo de agente</a>';
         return $html;
     }
+    // =======================================================
+    private function codigo_recuperar_password($data)
+    {
+        $html = "<p>Para definir a sua password, use o seguinte codigo:</p>";
+        $html .= "<h3>{$data['code']}</h3>";
+        return $html;
+    }
 }
+

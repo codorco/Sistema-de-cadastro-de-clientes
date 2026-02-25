@@ -111,7 +111,7 @@ class Agent extends BaseController
             $validation_errors[] = "Telefone é de preenchimento obrigatório.";
         } else {
             if(!preg_match("/^9{1}\d{8}$/", $_POST['text_phone'])){
-                $validation_errors[] = "O telefone deve começar por 9 e ter 9 algarismos no total.";
+                $validation_errors[] = "O telefone deve começar por 9 e ter 9 números no total.";
             }
         }
 
@@ -249,7 +249,7 @@ class Agent extends BaseController
             $validation_errors[] = "Telefone é de preenchimento obrigatório.";
         } else {
             if(!preg_match("/^9{1}\d{8}$/", $_POST['text_phone'])){
-                $validation_errors[] = "O telefone deve começar por 9 e ter 9 algarismos no total.";
+                $validation_errors[] = "O telefone deve começar por 9 e ter 9 números no total.";
             }
         }
 
