@@ -19,6 +19,7 @@ class SendEmail
             // IMPORTANTE:
             // Coloque os comentário para adicionar as opções de servidor local de e-mail.
             // Configurações do servidor
+            // abaixo voce pode usar o  mailtrap.io para testar o envio de e-mails sem precisar de um servidor real.
             
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
@@ -28,6 +29,7 @@ class SendEmail
             $mail->Password = EMAIL_PASSWORD;
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; 
             $mail->Port = EMAIL_PORT; 
+            
             
 
             $mail->setFrom(EMAIL_FROM);

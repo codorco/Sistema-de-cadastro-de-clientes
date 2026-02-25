@@ -23,7 +23,7 @@
 
             <?php else : ?>
 
-                <table class="table table-striped table-bordered">
+                <table class="table table-striped table-bordered" id="table_agents">
                     <thead class="table-dark">
                         <tr>
                             <th>Nome</th>
@@ -38,26 +38,33 @@
                     <tbody>
                         <?php foreach ($agents as $agent) : ?>
                             <tr>
-                                <td><?= $agent->name?></td>
+                                <td><?= $agent->name ?></td>
                                 <td class="text-center"><?= $agent->profile ?></td>
                                 <td class="text-center"><?= $agent->last_login ?></td>
                                 <td class="text-center"><?= $agent->created_at ?></td>
                                 <td class="text-center"><?= $agent->updated_at ?></td>
-                                <td class="text-center"><?= $agent->deleted_at ?></td>
+                                <td class="text-center text-danger"><?= $agent->deleted_at ?></td>
                                 <td class="text-end">
-                                    <a href="#"><i class="fa-regular fa-pen-to-square me-2"></i>Editar</a>
-                                    <span class="mx-2 opacity-50">|</span>
-                                    <a href="#"><i class="fa-solid fa-trash-can me-2"></i>Eliminar</a>
+
+                                    <?php if ($agent->id != $_SESSION['user']->id) : ?>
+                                        <?php if (empty($agent->deleted_at)) : ?>
+                                            <a href="?ct=admin&mt=edit_agent&id=<?= aes_encrypt($agent->id) ?>"><i class="fa-regular fa-pen-to-square me-2"></i>Editar</a>
+                                            <span class="mx-2 opacity-50">|</span>
+                                            <a href="?ct=admin&mt=edit_delete&id=<?= aes_encrypt($agent->id) ?>"><i class="fa-solid fa-trash-can me-2"></i>Eliminar</a>
+                                        <?php else : ?>
+                                            <span class="opacity-50"><i class="fa-regular fa-pen-to-square me-2"></i>Editar</span>
+                                            <span class="mx-2 opacity-50">|</span>
+                                            <a href="?ct=admin&mt=edit_recover&id=<?= aes_encrypt($agent->id) ?>"><i class="fa-solid fa-rotate-left me-2"></i>Recuperar</a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
 
-                <div class="row">
-                    <div class="col">
-                        <p class="mb-5">Total: <strong>[0]</strong></p>
-                    </div>
+                <div class="row mt-3">
                     <div class="col text-end">
                         <a href="#" class="btn btn-secondary px-4"><i class="fa-regular fa-file-excel me-2"></i>Exportar para XLSX</a>
                         <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
@@ -69,3 +76,38 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+
+        // datatable
+        $('#table_agents').DataTable({
+            pageLength: 10,
+            pagingType: "full_numbers",
+            language: {
+                decimal: "",
+                emptyTable: "Sem dados disponíveis na tabela.",
+                info: "Mostrando _START_ até _END_ de _TOTAL_ registos",
+                infoEmpty: "Mostrando 0 até 0 de 0 registos",
+                infoFiltered: "(Filtrando _MAX_ total de registos)",
+                infoPostFix: "",
+                thousands: ",",
+                lengthMenu: "Mostrando _MENU_ registos por página.",
+                loadingRecords: "Carregando...",
+                processing: "Processando...",
+                search: "Filtrar:",
+                zeroRecords: "Nenhum registro encontrado.",
+                paginate: {
+                    first: "Primeira",
+                    last: "Última",
+                    next: "Seguinte",
+                    previous: "Anterior"
+                },
+                aria: {
+                    sortAscending: ": ative para classificar a coluna em ordem crescente.",
+                    sortDescending: ": ative para classificar a coluna em ordem decrescente."
+                }
+            }
+        });
+    })
+</script>

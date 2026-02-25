@@ -10,7 +10,7 @@
 
                         <hr>
 
-                        <form action="?ct=admin&mt=new_agent_submit" method="post" novalidate>
+                        <form action="?ct=admin&mt=new_agent_submit" method="post">
 
                             <div class="mb-3">
                                 <label for="text_name" class="form-label">Nome do agente</label>
@@ -26,7 +26,7 @@
                             </div>
                             
                             <div class="mb-3 text-center">
-                                <a href="#" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
+                                <a href="?ct=admin&mt=agents_management" class="btn btn-secondary"><i class="fa-solid fa-xmark me-2"></i>Cancelar</a>
                                 <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-user-plus me-2"></i>Criar agente</button>
                             </div>
 
