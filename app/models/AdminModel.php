@@ -193,4 +193,27 @@ class AdminModel extends BaseModel
             ];
         }
     }
+
+    // =======================================================
+    public function get_agent_data($id)
+    {
+        // Obtém dados do agente a serem editados.
+        $params = [
+            ':id' => $id
+        ];
+
+        $this->db_connect();
+        $results = $this->query(
+            "SELECT " . 
+            "id, " .
+            "AES_DECRYPT(`name`, '" . MYSQL_AES_KEY . "') `name`, " .
+            "profile, " .
+            "created_at, " .
+            "updated_at, " .
+            "deleted_at " .
+            "FROM agents " . 
+            "WHERE id = :id"
+        , $params);
+        return $results;
+    }
 }
