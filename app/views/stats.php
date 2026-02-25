@@ -42,7 +42,11 @@
                 <div class="col-sm-6 col-12 p-1">
                     <div class="card p-3">
                         <h4><i class="fa-solid fa-users me-2"></i>Gráfico</h4>
-                        <canvas id="chartjs_chart" height="400px"></canvas>
+                        <?php if (count($agents) == 0) : ?>
+                            <p class="text-center">Sem dados para criar gráfico.</p>
+                        <?php else : ?>
+                            <canvas id="chartjs_chart" height="408px"></canvas>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -74,11 +78,11 @@
                                     </tr>
                                     <tr>
                                         <td class="text-start">Idade do cliente mais novo:</td>
-                                        <td class="text-start"><strong><?= $global_stats['younger_client']->value ?></strong></td>
+                                        <td class="text-start"><strong><?= empty($global_stats['younger_client']->value) ? 'N/A' : $global_stats['younger_client']->value ?></strong></td>
                                     </tr>
                                     <tr>
                                         <td class="text-start">Idade do cliente mais velho:</td>
-                                        <td class="text-start"><strong><?= $global_stats['oldest_client']->value ?></strong></td>
+                                        <td class="text-start"><strong><?= empty($global_stats['oldest_client']->value) ? 'N/A' : $global_stats['oldest_client']->value ?></strong></td>
                                     </tr>
                                     <tr>
                                         <td class="text-start">Média de idades dos clientes:</td>

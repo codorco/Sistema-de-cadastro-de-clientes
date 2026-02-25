@@ -13,7 +13,7 @@
 
                         <p class="text-center">Indique o seu nome de utilizador.<br>Vamos enviar um email com um <strong>código</strong> para recuperar a password.</p>
 
-                        <form action="?ct=main&mt=reset_password_submit" method="post" novalidate>
+                        <form action="?ct=main&mt=reset_password_submit" method="post" >
 
                             <div class="mb-4">
                                 <label for="text_username" class="form-label">Utilizador</label>

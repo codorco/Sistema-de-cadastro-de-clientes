@@ -13,7 +13,7 @@
 
                         <p class="text-center">Introduza o código que lhe enviámos por email.</p>
 
-                        <form action="?ct=main&mt=insert_code_submit&id=<?= aes_encrypt($id) ?>" method="post" novalidate>
+                        <form action="?ct=main&mt=insert_code_submit&id=<?= aes_encrypt($id) ?>" method="post" >
 
                             <div class="row justify-content-center mb-4">
                                 <div class="col-8">

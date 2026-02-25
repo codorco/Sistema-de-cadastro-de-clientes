@@ -4,7 +4,7 @@
             <div class="card p-4 mb-5">
 
 
-                <form action="?ct=main&mt=change_password_submit" method="post" novalidate>
+                <form action="?ct=main&mt=change_password_submit" method="post" >
                     <div class="row justify-content-center">
                         <div class="col-8">
 

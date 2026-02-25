@@ -11,7 +11,7 @@
                 <div class="row justify-content-center">
                     <div class="col-8">
 
-                        <form action="?ct=main&mt=reset_define_password_submit&id=<?= aes_encrypt($id) ?>" method="post" novalidate>
+                        <form action="?ct=main&mt=reset_define_password_submit&id=<?= aes_encrypt($id) ?>" method="post" >
 
                             <p class="mb-3">Introduza os dados da <strong>nova password</strong>.</p>
 

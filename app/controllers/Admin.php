@@ -201,14 +201,16 @@ class Admin extends BaseController
                     </thead>
                     <tbody>';
 
-        $html .= '<tr><td>Total agentes:</td><td style="text-align: right;">' . $global_stats['total_agents']->value . '</td></tr>';
-        $html .= '<tr><td>Total clientes:</td><td style="text-align: right;">' . $global_stats['total_clients']->value . '</td></tr>';
-        $html .= '<tr><td>Total clientes removidos:</td><td style="text-align: right;">' . $global_stats['total_deleted_clients']->value . '</td></tr>';
-        $html .= '<tr><td>Média de clientes por agente:</td><td style="text-align: right;">' . sprintf("%.2f", $global_stats['average_clients_per_agent']->value) . '</td></tr>';
-        $html .= '<tr><td>Idade do cliente mais novo:</td><td style="text-align: right;">' . $global_stats['younger_client']->value . ' anos.</td></tr>';
-        $html .= '<tr><td>Idade do cliente mais velho:</td><td style="text-align: right;">' . $global_stats['oldest_client']->value . ' anos.</td></tr>';
-        $html .= '<tr><td>Percentagem de homens:</td><td style="text-align: right;">' . $global_stats['percentage_males']->value . ' %</td></tr>';
-        $html .= '<tr><td>Percentagem de mulheres:</td><td style="text-align: right;">' . $global_stats['percentage_females']->value . ' %</td></tr>';
+        $html .= '<tr><td>Total agentes:</td><td style="text-align: right;">' . ($global_stats['total_agents']->value ?? 'N/A') . '</td></tr>';
+        $html .= '<tr><td>Total clientes:</td><td style="text-align: right;">' . ($global_stats['total_clients']->value ?? 'N/A') . '</td></tr>';
+        $html .= '<tr><td>Total clientes removidos:</td><td style="text-align: right;">' . ($global_stats['total_deleted_clients']->value ?? 'N/A') . '</td></tr>';
+        $html .= '<tr><td>Média de clientes por agente:</td><td style="text-align: right;">' . sprintf("%.2f", $global_stats['average_clients_per_agent']->value ?? 0) . '</td></tr>';
+        $html .= '<tr><td>Idade do cliente mais novo:</td><td style="text-align: right;">' . (($global_stats['younger_client']->value ?? null) ? $global_stats['younger_client']->value . ' anos.' : 'N/A') . '</td></tr>';
+        $html .= '<tr><td>Idade do cliente mais velho:</td><td style="text-align: right;">' . (($global_stats['oldest_client']->value ?? null) ? $global_stats['oldest_client']->value . ' anos.' : 'N/A') . '</td></tr>';
+
+        $html .= '<tr><td>Percentagem de homens:</td><td style="text-align: right;">' . (($global_stats['percentage_males']->value ?? null) ? sprintf("%.2f", $global_stats['percentage_males']->value) . ' %' : 'N/A') . '</td></tr>';
+
+        $html .= '<tr><td>Percentagem de mulheres:</td><td style="text-align: right;">' . (($global_stats['percentage_females']->value ?? null) ? sprintf("%.2f", $global_stats['percentage_females']->value) . ' %' : 'N/A') . '</td></tr>';
 
         $html .= '
                     </tbody>
@@ -610,21 +612,21 @@ class Admin extends BaseController
             header('Location: index.php');
         }
 
-        // obter dados dos agentes
+        // Obter dados dos agentes.
         $model = new AdminModel();
         $results = $model->get_agents_data_and_total_clients();
         $results = $results->results;
 
-        // Adiciona cabeçalho à coleção
+        // Adiciona cabeçalho à coleção.
         $data[] = ['name', 'profile', 'active', 'last login', 'created at', 'updated at', 'deleted at', 'total active clients', 'total deleted clients'];
 
-        // Coloca todos os agentes na coleção de dados $data
+        // Coloca todos os agentes na coleção de dados $data.
         foreach ($results as $agent) {
 
-            // remover a primeira propriedade (id)
+            // Remove a primeira propriedade (id).
             unset($agent->id);
 
-            // Adiciona dados como array (o $client original é um objeto stdClass)
+            // Adiciona dados como array (o $agent original é um objeto stdClass).
             $data[] = (array)$agent;
         }
 

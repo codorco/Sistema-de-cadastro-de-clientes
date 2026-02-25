@@ -12,7 +12,7 @@
                 <p class="my-4 text-center opacity-75">Não existem clientes registados.</p>
 
                 <div class="text-center mb-5">
-                    <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
+                    <a href="?ct=main&mt=index" class="btn btn-secondary px-4"><i class="fa-solid fa-chevron-left me-2"></i>Voltar</a>
                 </div>
 
             <?php else: ?>

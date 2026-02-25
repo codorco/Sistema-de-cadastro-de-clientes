@@ -76,10 +76,19 @@ class AdminModel extends BaseModel
         )->results[0];
 
         // cliente mais jovem
-        $results['younger_client'] = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate DESC LIMIT 1")->results[0];
-
+        $tmp = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate DESC LIMIT 1");
+        if($tmp->affected_rows == 0){
+            $results['younger_client'] = null;
+        } else {
+            $results['younger_client'] = $tmp->results[0];
+        }
         // cliente mais velho
-        $results['oldest_client'] = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate ASC LIMIT 1")->results[0];
+        $tmp = $this->query("SELECT TIMESTAMPDIFF(YEAR,birthdate,CURDATE()) value FROM persons ORDER BY birthdate ASC LIMIT 1");
+        if($tmp->affected_rows == 0){
+            $results['oldest_client'] = null;    
+        } else {
+            $results['oldest_client'] = $tmp->results[0];
+        }
 
         // average age between all clients
         $results['average_age'] = $this->query("SELECT AVG(TIMESTAMPDIFF(YEAR,birthdate,CURDATE())) value FROM persons")->results[0];
