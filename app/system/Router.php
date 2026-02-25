@@ -73,8 +73,8 @@ class Router
             // 5. Executa
             $controllerInstance->$method(...$parameters);
 
-        } catch (Exception $err) {
-            die($err->getMessage());
+        } catch (\Throwable $th) {
+            die('Acesso inválido.');
         }
 
 

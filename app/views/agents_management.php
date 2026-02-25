@@ -28,6 +28,7 @@
                         <tr>
                             <th>Nome</th>
                             <th class="text-center">Perfil</th>
+                            <th class="text-center">Registado</th>
                             <th class="text-center">Último login</th>
                             <th class="text-center">Criado em</th>
                             <th class="text-center">Atualizado em</th>
@@ -38,8 +39,25 @@
                     <tbody>
                         <?php foreach ($agents as $agent) : ?>
                             <tr>
-                                <td><?= $agent->name ?></td>
+                                <td>
+                                    <?php if ($agent->profile == 'admin') : ?>
+                                        <i class="fa-solid fa-user-tie"></i>
+                                    <?php else : ?>
+                                        <i class="fa-regular fa-user"></i>
+                                    <?php endif; ?>
+                                    <span class="ms-3"><?= $agent->name ?></span>
+                                </td>
+
                                 <td class="text-center"><?= $agent->profile ?></td>
+
+                                <td class="text-center">
+                                    <?php if (!empty($agent->passwrd)) : ?>
+                                        <i class="fa-solid fa-circle-check text-success"></i>
+                                    <?php else : ?>
+                                        <i class="fa-solid fa-circle-xmark text-danger"></i>
+                                    <?php endif; ?>
+                                </td>
+
                                 <td class="text-center"><?= $agent->last_login ?></td>
                                 <td class="text-center"><?= $agent->created_at ?></td>
                                 <td class="text-center"><?= $agent->updated_at ?></td>
