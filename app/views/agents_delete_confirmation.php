@@ -7,13 +7,13 @@
 
                 <p class="text-center mb-3">Deseja eliminar o agente?</p>
                 
-                <h4 class="mb-3 text-center"><strong>[nome do agente]</strong></h4>
+                <h4 class="mb-3 text-center"><strong><?= $agent->name ?></strong></h4>
 
-                <p class="text-center">Total clientes: <strong>[0]</strong></p>
+                <p class="text-center">Total clientes: <strong><?= $agent->total_clients ?></strong></p>
 
                 <div class="text-center my-3">
-                    <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-xmark me-2"></i>Não</a>
-                    <a href="#" class="btn btn-secondary px-4"><i class="fa-solid fa-check me-2"></i>Sim</a>
+                    <a href="?ct=admin&mt=agents_management" class="btn btn-secondary px-4"><i class="fa-solid fa-xmark me-2"></i>Não</a>
+                    <a href="?ct=admin&mt=delete_agent_confirm&id=<?= aes_encrypt($agent->id) ?>" class="btn btn-secondary px-4"><i class="fa-solid fa-check me-2"></i>Sim</a>
                 </div>
                 
             </div>

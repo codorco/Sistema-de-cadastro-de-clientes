@@ -134,3 +134,7 @@
 [2026-02-25T16:20:47.724041+00:00] app_logs.INFO: admin@bng.com - editado com sucesso os dados do agente ID: 3 - agente2@bng.com [] []
 [2026-02-25T16:22:43.750932+00:00] app_logs.INFO: admin@bng.com - editado com sucesso os dados do agente ID: 3 - agente2@bng.com [] []
 [2026-02-25T16:23:20.191924+00:00] app_logs.INFO: admin@bng.com - editado com sucesso os dados do agente ID: 3 - agente2@bng.com [] []
+[2026-02-25T16:34:02.616383+00:00] app_logs.INFO: admin@bng.com - eliminado com sucesso o agente ID: 6 [] []
+[2026-02-25T16:36:17.386248+00:00] app_logs.INFO: admin@bng.com - recuperado com sucesso o agente ID: 2 [] []
+[2026-02-25T16:36:20.368091+00:00] app_logs.INFO: admin@bng.com - recuperado com sucesso o agente ID: 6 [] []
+[2026-02-25T16:36:32.548382+00:00] app_logs.INFO: admin@bng.com - eliminado com sucesso o agente ID: 3 [] []
