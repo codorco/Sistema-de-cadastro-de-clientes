@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid pb-5">
     <div class="row justify-content-center">
         <div class="col-12 p-5 bg-white">
 
