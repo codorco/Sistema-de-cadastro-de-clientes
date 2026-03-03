@@ -3,6 +3,7 @@
 ![PHP Version](https://img.shields.io/badge/php-8.2-blue.svg)
 ![MySQL Version](https://img.shields.io/badge/mysql-8.0-orange.svg)
 ![Docker](https://img.shields.io/badge/docker-ready-blue.svg)
+![Status](https://img.shields.io/badge/status-conclu%C3%ADdo-brightgreen)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
 Sistema web completo para gerenciamento de clientes e agentes, desenvolvido em PHP 8.2 com MySQL 8.0, totalmente containerizado com Docker.
@@ -315,4 +316,4 @@ Projeto feito com base no Curso: [Desenvolvimento Web Compacto e Completo - Joã
 
 # 📅 Última atualização
 
-25 de Fevereiro de 2026
+28 de Fevereiro de 2026
